@@ -1,4 +1,5 @@
 rootProject.name = 'phoos-java'
-include 'db'
+//include 'db'
 include 'app'
+include 'ui'
 
