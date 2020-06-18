@@ -2,8 +2,6 @@ package io.phoos.event;
 
 import io.phoos.player.Player;
 
-import java.util.Objects;
-
 /**
  * @author evanwht1@gmail.com
  */

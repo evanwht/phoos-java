@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+
+group 'io.phoos'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+test {
+    useJUnitPlatform()
+}
+sourceSets {
+    main.java.srcDir "src/main/java"
+    main.resources.srcDir "src/main/resources"
+}
+
+dependencies {
+    compile 'io.javalin:javalin:3.9.0'
+    compile 'org.aeonbits.owner:owner:1.0.12'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+    compile "org.slf4j:slf4j-simple:1.8.0-beta4"
+    testImplementation 'org.mockito:mockito-core:3.3.3'
+    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.3.3'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'io.phoos.Server'
+        )
+    }
+}
