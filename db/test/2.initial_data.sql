@@ -1,0 +1,30 @@
+INSERT INTO `phoosball`.`event_types` VALUES (1,'bread');
+INSERT INTO `phoosball`.`event_types` VALUES (2,'reverse bread');
+INSERT INTO `phoosball`.`event_types` VALUES (3,'toast');
+INSERT INTO `phoosball`.`event_types` VALUES (4,'reverse toast');
+INSERT INTO `phoosball`.`event_types` VALUES (5,'five man bread');
+INSERT INTO `phoosball`.`event_types` VALUES (6,'own goal');
+INSERT INTO `phoosball`.`event_types` VALUES (7,'full court bread');
+INSERT INTO `phoosball`.`event_types` VALUES (8,'five man goal');
+INSERT INTO `phoosball`.`event_types` VALUES (9,'double tap');
+INSERT INTO `phoosball`.`event_types` VALUES (10,'front line goal');
+INSERT INTO `phoosball`.`event_types` VALUES (11,'defense goal');
+INSERT INTO `phoosball`.`event_types` VALUES (13,'goalie goal');
+
+INSERT INTO `phoosball`.`players` VALUES (1,'Rick Sanchez','granps','','pull');
+INSERT INTO `phoosball`.`players` VALUES (2,'Morty Smith','adventurer','','push pass');
+INSERT INTO `phoosball`.`players` VALUES (3,'Summer Smith','eww','','pull spin pass');
+INSERT INTO `phoosball`.`players` VALUES (4,'Beth Smith','wine','','bullshit');
+INSERT INTO `phoosball`.`players` VALUES (5,'Jerry Smith','friend','','push-back');
+INSERT INTO `phoosball`.`players` VALUES (6,'Mr. Poopy Butthole','tee pee','','angle');
+
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (2,1,5,3,5,12,3,10);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (4,2,6,1,5,10,2,5);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (2,1,4,6,5,10,3,8);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (1,2,6,4,5,10,3,7);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (4,1,3,2,3,10,5,8);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (2,3,6,1,5,15,4,14);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (6,1,4,2,5,10,3,8);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (5,3,6,2,4,10,5,5);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (1,2,4,5,5,10,3,6);
+INSERT INTO `phoosball`.`games` (`team_1_p1`, `team_1_p2`, `team_2_p1`, `team_2_p2`, `team_1_half`, `team_1_final`, `team_2_half`, `team_2_final`) VALUES (1,2,4,5,5,11,4,9);
