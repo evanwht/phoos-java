@@ -27,7 +27,7 @@ public class DeleteBuilder extends SqlBuilder {
         return this;
     }
 
-    private String createStatement() {
+    String createStatement() {
         return new StringJoiner(" ", DELETE, ";")
                 .add(FROM)
                 .add("phoosball." + table)

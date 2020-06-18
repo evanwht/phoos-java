@@ -9,9 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  * @author evanwht1@gmail.com
  */
 @ExtendWith(MockitoExtension.class)
-public class UpdateBuilderTest {
+public class DeleteBuilderTest {
 
     @Mock private Connection db;
     @Mock private PreparedStatement statement;
@@ -46,24 +46,22 @@ public class UpdateBuilderTest {
             return Types.INTEGER;
         }
     };
-    private final Column arrayCol = new Column() {
-        @Override
-        public String getName() {
-            return "arrayCol";
-        }
 
-        @Override
-        public int getType() {
-            return Types.ARRAY;
-        }
-    };
+    @Test
+    void errorCase() {
+        final DeleteBuilder noWhere = new DeleteBuilder().table("test_table");
+        assertThrows(SQLException.class, () -> noWhere.execute(db));
+
+        final DeleteBuilder noTable = new DeleteBuilder().where(intCol, 1);
+        assertThrows(SQLException.class, () -> noTable.execute(db));
+    }
 
     @Test
     void single() throws SQLException {
-        final String expectedSql = "UPDATE phoosball.test_table SET varCharCol = ?;";
-        final UpdateBuilder builder = new UpdateBuilder()
+        final String expectedSql = "DELETE FROM phoosball.test_table WHERE varCharCol = ?;";
+        final DeleteBuilder builder = new DeleteBuilder()
                 .table("test_table")
-                .value(varCharCol, "val");
+                .where(varCharCol, "val");
         assertEquals(expectedSql, builder.createStatement());
         when(db.prepareStatement(expectedSql)).thenReturn(statement);
         when(statement.executeUpdate()).thenReturn(1);
@@ -73,20 +71,16 @@ public class UpdateBuilderTest {
 
     @Test
     void multi() throws SQLException {
-        final String expectedSql = "UPDATE phoosball.test_table SET varCharCol = ?, intCol = ?, arrayCol = ? WHERE intCol = ?;";
-        final UpdateBuilder builder = new UpdateBuilder()
+        final String expectedSql = "DELETE FROM phoosball.test_table WHERE varCharCol = ? AND intCol = ?;";
+        final DeleteBuilder builder = new DeleteBuilder()
                 .table("test_table")
-                .value(varCharCol, "val")
-                .value(intCol, 2)
-                .value(arrayCol, List.of("val1", "val2"))
-                .where(intCol, 1);
+                .where(varCharCol, "val")
+                .where(intCol, 2);
         assertEquals(expectedSql, builder.createStatement());
         when(db.prepareStatement(expectedSql)).thenReturn(statement);
         when(statement.executeUpdate()).thenReturn(1);
         assertEquals(1, builder.execute(db).orElse(0));
         verify(statement).setObject(1, "val", Types.VARCHAR);
         verify(statement).setObject(2, 2, Types.INTEGER);
-        verify(statement).setObject(3, List.of("val1", "val2"), Types.ARRAY);
-        verify(statement).setObject(4, 1, Types.INTEGER);
     }
 }

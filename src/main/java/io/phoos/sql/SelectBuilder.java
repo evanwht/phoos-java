@@ -26,6 +26,10 @@ public class SelectBuilder<T> extends SqlBuilder {
 		this.resultMapper = resultMapper;
 	}
 
+	public static SelectBuilder<ResultSet> resultSetSelector() {
+		return new SelectBuilder<>(rs -> rs);
+	}
+
 	public SelectBuilder<T> table(final String table) {
 		this.table = table;
 		return this;
@@ -41,7 +45,7 @@ public class SelectBuilder<T> extends SqlBuilder {
 		return this;
 	}
 
-	private String createStatement() {
+	String createStatement() {
 		final StringJoiner sj = new StringJoiner(" ", SELECT, ";");
 		if (columns.isEmpty()) {
 			sj.add("*");
@@ -53,7 +57,7 @@ public class SelectBuilder<T> extends SqlBuilder {
 			sj.add(WHERE)
 			  .add(clauses.entrySet().stream()
 						  .map(e -> e.getKey().getName() + (e.getValue() == null ? " IS NULL" : " = ?"))
-						  .collect(Collectors.joining(", ")));
+						  .collect(Collectors.joining(" AND ")));
 
 		}
 		return sj.toString();

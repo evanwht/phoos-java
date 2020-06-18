@@ -7,11 +7,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,10 +20,11 @@ import static org.mockito.Mockito.when;
  * @author evanwht1@gmail.com
  */
 @ExtendWith(MockitoExtension.class)
-public class UpdateBuilderTest {
+public class SelectBuilderTest {
 
     @Mock private Connection db;
     @Mock private PreparedStatement statement;
+    @Mock private ResultSet resultSet;
 
     private final Column varCharCol = new Column() {
         @Override
@@ -60,33 +62,31 @@ public class UpdateBuilderTest {
 
     @Test
     void single() throws SQLException {
-        final String expectedSql = "UPDATE phoosball.test_table SET varCharCol = ?;";
-        final UpdateBuilder builder = new UpdateBuilder()
+        final String expectedSql = "SELECT * FROM phoosball.test_table WHERE varCharCol = ?;";
+        final SelectBuilder<ResultSet> builder = SelectBuilder.resultSetSelector()
                 .table("test_table")
-                .value(varCharCol, "val");
+                .where(varCharCol, "val");
         assertEquals(expectedSql, builder.createStatement());
         when(db.prepareStatement(expectedSql)).thenReturn(statement);
-        when(statement.executeUpdate()).thenReturn(1);
-        assertEquals(1, builder.execute(db).orElse(0));
+        when(statement.executeQuery()).thenReturn(resultSet);
+        assertNotNull(builder.getOne(db));
         verify(statement).setObject(1, "val", Types.VARCHAR);
     }
 
     @Test
     void multi() throws SQLException {
-        final String expectedSql = "UPDATE phoosball.test_table SET varCharCol = ?, intCol = ?, arrayCol = ? WHERE intCol = ?;";
-        final UpdateBuilder builder = new UpdateBuilder()
+        final String expectedSql = "SELECT intCol, arrayCol FROM phoosball.test_table WHERE varCharCol = ? AND intCol = ?;";
+        final SelectBuilder<ResultSet> builder = SelectBuilder.resultSetSelector()
                 .table("test_table")
-                .value(varCharCol, "val")
-                .value(intCol, 2)
-                .value(arrayCol, List.of("val1", "val2"))
-                .where(intCol, 1);
+                .select(intCol)
+                .select(arrayCol)
+                .where(varCharCol, "val")
+                .where(intCol, 2);
         assertEquals(expectedSql, builder.createStatement());
         when(db.prepareStatement(expectedSql)).thenReturn(statement);
-        when(statement.executeUpdate()).thenReturn(1);
-        assertEquals(1, builder.execute(db).orElse(0));
+        when(statement.executeQuery()).thenReturn(resultSet);
+        assertNotNull(builder.getOne(db));
         verify(statement).setObject(1, "val", Types.VARCHAR);
         verify(statement).setObject(2, 2, Types.INTEGER);
-        verify(statement).setObject(3, List.of("val1", "val2"), Types.ARRAY);
-        verify(statement).setObject(4, 1, Types.INTEGER);
     }
 }
