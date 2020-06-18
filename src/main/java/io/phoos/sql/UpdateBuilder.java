@@ -37,7 +37,7 @@ public class UpdateBuilder extends SqlBuilder {
      * Creates an update statement for a select amount of columns. Of the form: "UPDATE {table} SET {col} = {val} WHERE {col} = {val};"
      * @return update SQL statement
      */
-    private String createStatement() {
+    String createStatement() {
         final StringJoiner sj = new StringJoiner(" ", UPDATE, ";")
                 .add("phoosball." + table)
                 .add(SET);
