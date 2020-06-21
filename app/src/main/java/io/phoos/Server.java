@@ -40,6 +40,9 @@ public class Server {
 
 		Javalin app = Javalin.create(config -> {
 			config.addStaticFiles("/public");
+			config.addStaticFiles("/public/games");
+			config.addStaticFiles("/public/new/player");
+			config.addStaticFiles("/public/new/game");
 		});
 
 		JavalinJackson.configure(objectMapper);
@@ -65,7 +68,7 @@ public class Server {
 	private static void initAdminAPI(final Connection db, final Javalin app) {
 		final EventsHandler eventsHandler = new EventsHandler(db);
 		app.routes(() -> {
-			path("events", () -> {
+			path("api/events", () -> {
 				get(eventsHandler::getAll);
 				post(eventsHandler::post);
 				path(":id", () -> {
@@ -80,7 +83,7 @@ public class Server {
 	private static void initPlayersAPI(final Connection db, final Javalin app) {
 		final PlayersHandler playersHandler = new PlayersHandler(db);
 		app.routes(() -> {
-			path("players", () -> {
+			path("api/players", () -> {
 				getJSON(playersHandler::getAll);
 				postJSON(playersHandler::create, playersHandler::newPlayer);
 				path(":id", () -> {
@@ -95,7 +98,7 @@ public class Server {
 	private static void initGamesAPI(final Connection db, final Javalin app) {
 		final GamesHandler gamesHandler = new GamesHandler(db);
 		app.routes(() -> {
-			path("games", () -> {
+			path("api/games", () -> {
 				getJSON(gamesHandler::getAll);
 				postJSON(gamesHandler::post, gamesHandler::newGame);
 				path(":id", () -> {
