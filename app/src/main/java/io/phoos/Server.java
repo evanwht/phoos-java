@@ -96,12 +96,12 @@ public class Server {
 		final GamesHandler gamesHandler = new GamesHandler(db);
 		app.routes(() -> {
 			path("games", () -> {
-				get(gamesHandler::getAll);
-				post(gamesHandler::post);
+				getJSON(gamesHandler::getAll);
+				postJSON(gamesHandler::post, gamesHandler::newGame);
 				path(":id", () -> {
-					get(gamesHandler::get);
-					put(gamesHandler::put);
-					delete(gamesHandler::delete);
+					getJSON(gamesHandler::get, gamesHandler::idPathParam);
+					putJSON(gamesHandler::put, gamesHandler::gameUpdates);
+					deleteJSON(gamesHandler::delete, gamesHandler::idPathParam);
 				});
 			});
 		});

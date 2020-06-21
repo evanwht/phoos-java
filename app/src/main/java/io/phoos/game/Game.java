@@ -5,6 +5,7 @@ import io.phoos.event.GameEvent;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author evanwht1@gmail.com
@@ -33,6 +34,14 @@ public class Game {
 		this.team1FinalScore = b.team1FinalScore;
 		this.team2FinalScore = b.team2FinalScore;
 		this.events = b.events;
+	}
+
+	public static Builder newBuilder() {
+		return new Builder();
+	}
+
+	public static Builder from(Game other) {
+		return new Builder(other);
 	}
 
 	public int getId() {
@@ -75,6 +84,44 @@ public class Game {
 		return events;
 	}
 
+	@Override
+	public String toString() {
+		return "Game{" +
+				"id=" + id +
+				", created=" + created +
+				", played=" + played +
+				", team1=" + team1 +
+				", team2=" + team2 +
+				", team1HalfScore=" + team1HalfScore +
+				", team2HalfScore=" + team2HalfScore +
+				", team1FinalScore=" + team1FinalScore +
+				", team2FinalScore=" + team2FinalScore +
+				", events=" + events +
+				'}';
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		final Game game = (Game) o;
+		return id == game.id &&
+				team1HalfScore == game.team1HalfScore &&
+				team2HalfScore == game.team2HalfScore &&
+				team1FinalScore == game.team1FinalScore &&
+				team2FinalScore == game.team2FinalScore &&
+				Objects.equals(created, game.created) &&
+				Objects.equals(played, game.played) &&
+				Objects.equals(team1, game.team1) &&
+				Objects.equals(team2, game.team2) &&
+				Objects.equals(events, game.events);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, created, played, team1, team2, team1HalfScore, team2HalfScore, team1FinalScore, team2FinalScore, events);
+	}
+
 	public static final class Builder {
 		private int id;
 		private Instant created;
@@ -87,11 +134,18 @@ public class Game {
 		private int team2FinalScore;
 		private final List<GameEvent> events = new ArrayList<>();
 
-		private Builder() {
-		}
+		private Builder() { }
 
-		public static Builder aGame() {
-			return new Builder();
+		public Builder(final Game other) {
+			this.id = other.id;
+			this.created = other.created;
+			this.played = other.played;
+			this.team1 = other.team1;
+			this.team2 = other.team2;
+			this.team1HalfScore = other.team1HalfScore;
+			this.team2HalfScore = other.team2HalfScore;
+			this.team1FinalScore = other.team1FinalScore;
+			this.team2FinalScore = other.team2FinalScore;
 		}
 
 		public Builder id(int id) {
