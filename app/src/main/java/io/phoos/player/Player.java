@@ -12,13 +12,6 @@ public class Player {
 	private final String nickname;
 	private final String email;
 
-	public Player() {
-		this.id = 0;
-		this.name = null;
-		this.nickname = null;
-		this.email = null;
-	}
-
 	private Player(final Builder b) {
 		id = b.id;
 		name = b.name;
