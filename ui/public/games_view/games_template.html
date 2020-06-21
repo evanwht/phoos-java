@@ -1,0 +1,126 @@
+<div class="undernav container">
+  <h3 class="text-center mb-4">Previous Games</h3>
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Team 1</th>
+        <th scope="col">Team 2</th>
+        <th scope="col">Half Score</th>
+        <th scope="col">Final Score</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{.Games}}
+    </tbody>
+  </table>
+</div>
+<div class="modal fade" id="game-edit-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content text-center">
+      <!-- <div class="modal-header">
+        <h5 class="modal-title" id="game-edit-modal-title">Edit Game</h5>
+        
+      </div> -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">
+          <span style="color:white;">&times;</span>
+        </button>
+        <form class="container" method="POST" id="game_input_form">
+          <div class="form-group pt-3" id="choosePlayers">
+            
+            <h4>Edit Game</h4>
+            <hr>
+            <div class="d-md-block d-sm-none d-none">
+              <div class="row pad">
+                <div class="col-2"></div>
+                <div class="col">Defense</div>
+                <div class="col">Offense</div>
+              </div>
+            </div>
+            <div class="form-group form-row" id="team_1">
+              <label class="col">Team 1</label>
+              <div class="col-md-5 col-sm-12">
+                <div class="input-group">
+                  <div class="input-group-prepend d-md-none d-block">
+                    <div class="input-group-text">D</div>
+                  </div>
+                  <select class="form-control edit-field player-options" id="player1" name="t1_p1">
+                  </select>
+                </div class="input-group">
+              </div>
+              <div class="col-md-5 col-sm-12">
+                <div class="input-group">
+                  <div class="input-group-prepend d-md-none d-block">
+                    <div class="input-group-text">O</div>
+                  </div>
+                  <select class="form-control edit-field player-options" id="player2" name="t1_p2">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group form-row" id="team_2">
+              <label class="col">Team 2</label>
+              <div class="col-md-5">
+                <div class="input-group">
+                  <div class="input-group-prepend d-md-none d-block">
+                    <div class="input-group-text">D</div>
+                  </div>
+                  <select class="form-control edit-field player-options" id="player3" name="t2_p1">
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="input-group">
+                  <div class="input-group-prepend d-md-none d-block">
+                    <div class="input-group-text">O</div>
+                  </div>
+                  <select class="form-control edit-field player-options" id="player4" name="t2_p2">
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group" id="half_scores">
+            <h4 class="pt-2 mb-0">Half Time Scores</h4>
+            <div class="form-group form-row">
+              <div class="col">
+                <label for="halfScoreTeam1">Team 1</label>
+                <input type="number" class="form-control form-fill marg-left edit-field" id="halfScoreTeam1"
+                  name="t1_half">
+              </div>
+              <div class="col">
+                <label for="halfScoreTeam2">Team 2</label>
+                <input type="number" class="form-control form-fill marg-left edit-field" id="halfScoreTeam2"
+                  name="t2_half">
+              </div>
+            </div>
+          </div>
+          <div class="form-group" id="final_scores">
+            <h4 class="pt-2 mb-0">Final Scores</h4>
+            <div class="form-group form-row">
+              <div class="col">
+                <label for="endTeam1">Team 1</label>
+                <input type="number" class="form-control form-fill marg-left edit-field" id="endTeam1" name="t1_final">
+              </div>
+              <div class="col">
+                <label for="endTeam2">Team 2</label>
+                <input type="number" class="form-control form-fill marg-left edit-field" id="endTeam2" name="t2_final">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="save-game-edits" type="button" class="btn btn-outline-primary">Save changes</button>
+      </div>
+      <div id='saved-alert' class="alert alert-success h-25" role="alert">
+        <p id="alert-message">Game Saved!</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="games_view/games.js"></script>
