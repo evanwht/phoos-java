@@ -100,3 +100,11 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# VS Code
+.project
+ui/.project
+.classpath
+ui/.classpath
+.settings
+app/bin
