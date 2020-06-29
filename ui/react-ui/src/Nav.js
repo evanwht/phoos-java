@@ -12,12 +12,12 @@ export class Navigation extends Component {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="/games">Games</Nav.Link>
+                        <Nav.Link href="/standings" to="/standings">Standings</Nav.Link>
+                        <Nav.Link href="/games" to="/games">Games</Nav.Link>
                         <NavDropdown title="New" id="nav-dropdown">
-                            <NavDropdown.Item href="/new/player">Player</NavDropdown.Item>
+                            <NavDropdown.Item href="/new/player" to="/new/player">Player</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/new/player">Game</NavDropdown.Item>
+                            <NavDropdown.Item href="/new/game" to="/new/game">Game</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
