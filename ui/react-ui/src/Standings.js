@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
 
 export class StandingsTable extends Component {
     constructor(props) {
