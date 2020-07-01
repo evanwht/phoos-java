@@ -1,118 +1,101 @@
 import React, { Component } from "react";
-
+import Form from 'react-bootstrap/Form';
+import FormLabel from 'react-bootstrap/FormLabel';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 export class GameForm extends Component {
+    renderPlayerOptions(id, name, position) {
+        return (
+            <Col sm="12" md="5">
+                <InputGroup>
+                    <InputGroup.Prepend className="d-md-none d-block w-25">
+                        <InputGroup.Text>{position}</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl as="select" id={id} name={name} required>
+                        <option value=""></option>
+                        <option value="1">Evan White</option>
+                    </FormControl>
+                </InputGroup>
+            </Col>
+        );
+    }
+
     render() {
         return (
-            <div class="container">
-                <div class="row">
-                    <div id="scores" class="col-8 undernav mx-auto">
-                        <div class="pb-4">
-                            <h3>New Game</h3>
-                        </div>
-                        <form class="container boxed needs-validation" method="POST" action="api/games" id="game_input_form" novalidate>
-                            <div class="form-group pt-3" id="choosePlayers">
+            <Container className="mb-4">
+                <Row>
+                    <Col sm="12" md="9" id="scores" className="undernav mx-auto">
+                        <h3 class="pb-4">New Game</h3>
+                        <Form className="container boxed" method="POST" action="api/games" id="game_input_form">
+                            <Form.Group className="pt-3" id="choosePlayers">
                                 <h4>Starting Positions</h4>
                                 <div class="d-md-block d-sm-none d-none">
-                                    <div class="row pad">
-                                        <div class="col-2"></div>
-                                        <div class="col">Defense</div>
-                                        <div class="col">Offense</div>
-                                    </div>
+                                    <Row className="pad">
+                                        <Col sm="2"></Col>
+                                        <Col>Defense</Col>
+                                        <Col>Offense</Col>
+                                    </Row>
                                 </div>
-                                <div class="form-group form-row" id="team_1">
-                                    <label class="col">Team 1</label>
-                                    <div class="col-md-5 col-sm-12">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend d-md-none d-block">
-                                                <div class="input-group-text">D</div>
-                                            </div>
-                                            <select class="form-control" id="player1" name="t1_p1" required>
-                                                <option value=""></option>
-                                                {/* <!{{.PlayerOptions }}--> */}
-                                            </select>
-                                            <div class="input-group">
-                                                <div class="invalid-feedback">Must have all players</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5 col-sm-12">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend d-md-none d-block">
-                                                <div class="input-group-text">O</div>
-                                            </div>
-                                            <select class="form-control" id="player2" name="t1_p2" required>
-                                                <option value=""></option>
-                                                {/* <!{{.PlayerOptions }}--> */}
-                                            </select>
-                                        </div>
-                                        <div class="invalid-feedback">Must have all players</div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-row" id="team_2">
-                                    <label class="col">Team 2</label>
-                                    <div class="col-md-5">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend d-md-none d-block">
-                                                <div class="input-group-text">D</div>
-                                            </div>
-                                            <select class="form-control" id="player3" name="t2_p1" required>
-                                                <option value=""></option>
-                                                {/* <!{{.PlayerOptions }}--> */}
-                                            </select>
-                                        </div>
-                                        <div class="invalid-feedback">Must have all players</div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend d-md-none d-block">
-                                                <div class="input-group-text">O</div>
-                                            </div>
-                                            <select class="form-control" id="player4" name="t2_p2" required>
-                                                <option value=""></option>
-                                                {/* <!{{.PlayerOptions }}--> */}
-                                            </select>
-                                        </div>
-                                        <div class="invalid-feedback">Must have all players</div>
-                                    </div>
-                                </div>
-                            </div>
+                                <Form.Group id="team-1">
+                                    <Form.Row>
+                                        <Col>
+                                            <FormLabel>Team 1</FormLabel>
+                                        </Col>
+                                        {this.renderPlayerOptions("player1", "t1_p1", "Defense")}
+                                        {this.renderPlayerOptions("player2", "t1_p2", "Offense")}
+                                    </Form.Row>
+                                </Form.Group>
+                                <Form.Group id="team-2">
+                                    <Form.Row>
+                                        <Col>
+                                            <FormLabel>Team 2</FormLabel>
+                                        </Col>
+                                        {this.renderPlayerOptions("player3", "t2_p1", "Defense")}
+                                        {this.renderPlayerOptions("player4", "t2_p2", "Offense")}
+                                    </Form.Row>
+                                </Form.Group>
+                            </Form.Group>
                             <hr />
-                            <div class="form-group" id="half_scores">
+                            <Form.Group id="half_scores">
                                 <h4 class="pt-2 mb-0">Half Time Scores</h4>
-                                <div class="form-group form-row">
-                                    <div class="col">
-                                        <label for="halfScoreTeam1">Team 1</label>
-                                        <input type="number" class="form-control form-fill marg-left" id="halfScoreTeam1" name="t1_half" required />
-                                        <div class="invalid-feedback">Please provide a valid (0-5) half time score</div>
-                                    </div>
-                                    <div class="col">
-                                        <label for="halfScoreTeam2">Team 2</label>
-                                        <input type="number" class="form-control form-fill marg-left" id="halfScoreTeam2" name="t2_half" required />
-                                        <div class="invalid-feedback">Please provide a valid (0-5) half time score</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group" id="final_scores">
+                                <Form.Group>
+                                    <Form.Row>
+                                        <Col>
+                                            <FormLabel>Team 1</FormLabel>
+                                            <Form.Control name="t1_half" id="halfScoreTeam1" type="number" max={5} min={0} required />
+                                        </Col>
+                                        <Col>
+                                            <FormLabel>Team 2</FormLabel>
+                                            <Form.Control name="t2_half" id="halfScoreTeam2" type="number" max={5} min={0} required />
+                                        </Col>
+                                    </Form.Row>
+                                </Form.Group>
+                            </Form.Group>
+                            <Form.Group id="final_scores">
                                 <h4 class="pt-2 mb-0">Final Scores</h4>
-                                <div class="form-group form-row">
-                                    <div class="col">
-                                        <label for="endTeam1">Team 1</label>
-                                        <input type="number" class="form-control form-fill marg-left" id="endTeam1" name="t1_final" required />
-                                        <div class="invalid-feedback">Please provide a valid (0-15 win by 2) ending score</div>
-                                    </div>
-                                    <div class="col">
-                                        <label for="endTeam2">Team 2</label>
-                                        <input type="number" class="form-control form-fill marg-left" id="endTeam2" name="t2_final" required />
-                                        <div class="invalid-feedback">Please provide a valid (0-15 win by 2) ending score</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary mb-2" id="submitButton">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                                <Form.Group>
+                                    <Form.Row>
+                                        <Col>
+                                            <FormLabel>Team 1</FormLabel>
+                                            <Form.Control name="t1_final" id="endTeam1" type="number" max={15} min={0} required />
+                                        </Col>
+                                        <Col>
+                                            <FormLabel>Team 2</FormLabel>
+                                            <Form.Control name="t2_final" id="endTeam2" type="number" max={15} min={0} required />
+                                        </Col>
+                                    </Form.Row>
+                                </Form.Group>
+                            </Form.Group>
+                            <Button variant="primary" size="lg" type="submit" className="mb-4 mt-2">Submit</Button>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }
