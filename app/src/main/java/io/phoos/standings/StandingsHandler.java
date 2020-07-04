@@ -1,10 +1,9 @@
-package io.phoos.player;
+package io.phoos.standings;
 
+import io.phoos.DB;
+import io.phoos.player.Player;
 import io.phoos.sql.SelectBuilder;
-import io.phoos.standings.Standing;
-import io.phoos.standings.StandingsView;
 
-import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -12,9 +11,9 @@ import java.util.List;
  */
 public class StandingsHandler {
 
-    private final Connection db;
+    private final DB db;
 
-    public StandingsHandler(final Connection db) {
+    public StandingsHandler(final DB db) {
         this.db = db;
     }
 
@@ -29,6 +28,6 @@ public class StandingsHandler {
                 .select(StandingsView.Columns.NAME)
                 .select(StandingsView.Columns.WINS)
                 .select(StandingsView.Columns.LOSSES)
-                .getMany(db);
+                .getMany(db.getConnection());
     }
 }

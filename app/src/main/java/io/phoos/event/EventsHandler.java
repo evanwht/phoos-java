@@ -1,18 +1,17 @@
 package io.phoos.event;
 
 import io.javalin.http.Context;
+import io.phoos.DB;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.Connection;
 
 /**
  * @author evanwht1@gmail.com
  */
 public class EventsHandler {
 
-	private final Connection db;
+	private final DB db;
 
-	public EventsHandler(final Connection db) {
+	public EventsHandler(final DB db) {
 		this.db = db;
 	}
 

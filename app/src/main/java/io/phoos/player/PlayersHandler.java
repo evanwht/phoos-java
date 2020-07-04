@@ -2,6 +2,7 @@ package io.phoos.player;
 
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import io.phoos.DB;
 import io.phoos.Response;
 import io.phoos.sql.DeleteBuilder;
 import io.phoos.sql.InsertBuilder;
@@ -11,7 +12,6 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import java.util.OptionalLong;
  */
 public class PlayersHandler {
 
-	private final Connection db;
+	private final DB db;
 
-	public PlayersHandler(final Connection db) {
+	public PlayersHandler(final DB db) {
 		this.db = db;
 	}
 
@@ -42,7 +42,7 @@ public class PlayersHandler {
 				.select(PlayerTable.Columns.NAME)
 				.select(PlayerTable.Columns.NICKNAME)
 				.select(PlayerTable.Columns.EMAIL)
-				.getMany(db);
+				.getMany(db.getConnection());
 	}
 
 	public int idPathParam(@NotNull Context ctx) {
@@ -65,7 +65,7 @@ public class PlayersHandler {
 				.select(PlayerTable.Columns.NICKNAME)
 				.select(PlayerTable.Columns.EMAIL)
 				.where(PlayerTable.Columns.ID, id)
-				.getOne(db);
+				.getOne(db.getConnection());
 		return player.orElseThrow(() -> new NotFoundResponse("Requested Player does not exist"));
 	}
 
@@ -89,7 +89,7 @@ public class PlayersHandler {
 		if (changes.getEmail() != null) {
 			builder.value(PlayerTable.Columns.EMAIL, changes.getEmail());
 		}
-		final OptionalInt i = builder.execute(db);
+		final OptionalInt i = builder.execute(db.getConnection());
 		if (i.isPresent()) {
 			return new Response("Successfully saved new user values", HttpStatus.OK_200);
 		} else {
@@ -100,7 +100,7 @@ public class PlayersHandler {
 	public Response delete(final int id) throws Exception {
 		final OptionalInt deleted = new DeleteBuilder().table(PlayerTable.TABLE_NAME)
 													   .where(PlayerTable.Columns.ID, id)
-													   .execute(db);
+													   .execute(db.getConnection());
 		if (deleted.isPresent()) {
 			return new Response("delete player: " + id, HttpStatus.OK_200);
 		} else {
@@ -122,7 +122,7 @@ public class PlayersHandler {
 				.value(PlayerTable.Columns.NAME, player.getName())
 				.value(PlayerTable.Columns.NICKNAME, player.getNickname())
 				.value(PlayerTable.Columns.EMAIL, player.getEmail())
-				.execute(db);
+				.execute(db.getConnection());
 		if (newId.isPresent()) {
 			return new Response("Created new player with id: " + newId.getAsLong(), HttpStatus.OK_200);
 		} else {
