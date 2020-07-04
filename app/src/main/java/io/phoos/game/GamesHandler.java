@@ -3,6 +3,7 @@ package io.phoos.game;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import io.phoos.DB;
 import io.phoos.Response;
 import io.phoos.player.Player;
 import io.phoos.sql.DeleteBuilder;
@@ -12,7 +13,6 @@ import io.phoos.sql.UpdateBuilder;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +24,9 @@ import java.util.OptionalLong;
  */
 public class GamesHandler {
 
-	private final Connection db;
+	private final DB db;
 
-	public GamesHandler(final Connection db) {
+	public GamesHandler(final DB db) {
 		this.db = db;
 	}
 
@@ -75,7 +75,7 @@ public class GamesHandler {
 				.select(LastGamesView.Columns.TEAM_2_HALF)
 				.select(LastGamesView.Columns.TEAM_1_FINAL)
 				.select(LastGamesView.Columns.TEAM_2_FINAL)
-				.getMany(db);
+				.getMany(db.getConnection());
 	}
 
 	public int idPathParam(@NotNull Context ctx) {
@@ -130,7 +130,7 @@ public class GamesHandler {
 				.select(LastGamesView.Columns.TEAM_1_FINAL)
 				.select(LastGamesView.Columns.TEAM_2_FINAL)
 				.where(LastGamesView.Columns.ID, id)
-				.getOne(db);
+				.getOne(db.getConnection());
 		return game.orElseThrow(() -> new NotFoundResponse("Requested Game does not exist"));
 	}
 
@@ -183,7 +183,7 @@ public class GamesHandler {
 		if (game.getTeam2FinalScore() > 0) {
 			builder.value(GamesTable.Columns.TEAM_2_FINAL, game.getTeam2FinalScore());
 		}
-		OptionalInt rows = builder.execute(db);
+		OptionalInt rows = builder.execute(db.getConnection());
 		if (rows.isPresent()) {
 			return new Response("New game data saved for: " + game.getId(), HttpStatus.OK_200);
 		}
@@ -194,7 +194,7 @@ public class GamesHandler {
 		OptionalInt rows = new DeleteBuilder()
 				.table(GamesTable.TABLE_NAME)
 				.where(GamesTable.Columns.ID, id)
-				.execute(db);
+				.execute(db.getConnection());
 		if (rows.isPresent()) {
 			return new Response("Deleted game: " + id, HttpStatus.OK_200);
 		}
@@ -224,7 +224,7 @@ public class GamesHandler {
 				.value(GamesTable.Columns.TEAM_2_HALF, game.getTeam2HalfScore())
 				.value(GamesTable.Columns.TEAM_1_FINAL, game.getTeam1FinalScore())
 				.value(GamesTable.Columns.TEAM_2_FINAL, game.getTeam2FinalScore())
-				.execute(db);
+				.execute(db.getConnection());
 		return new Response("Saved game with new id: " + id.orElseThrow(() -> new BadRequestResponse("Could not save game")),
 				HttpStatus.OK_200);
 	}

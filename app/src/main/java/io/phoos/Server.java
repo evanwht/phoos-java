@@ -8,11 +8,9 @@ import io.javalin.plugin.json.JavalinJackson;
 import io.phoos.event.EventsHandler;
 import io.phoos.game.GamesHandler;
 import io.phoos.player.PlayersHandler;
-import io.phoos.player.StandingsHandler;
+import io.phoos.standings.StandingsHandler;
 import org.aeonbits.owner.ConfigFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static io.javalin.apibuilder.ApiBuilder.delete;
@@ -33,9 +31,9 @@ public class Server {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void main(String[] args) {
-		final Connection db;
+		final DB db;
 		try {
-			db = getDB(ConfigFactory.create(DBProperties.class));
+			db = new DB(ConfigFactory.create(DBProperties.class));
 		} catch (SQLException e) {
 			throw new RuntimeException("Could not connect to DB", e);
 		}
@@ -48,6 +46,7 @@ public class Server {
 		initStandingsAPI(db, app);
 		initGamesAPI(db, app);
 		initAdminAPI(db, app);
+		app.get("refresh_db", db::refresh);
 
 		app.exception(NotFoundResponse.class, (e, ctx) -> {
 			ctx.status(404);
@@ -63,7 +62,7 @@ public class Server {
 		Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
 	}
 
-	private static void initStandingsAPI(final Connection db, final Javalin app) {
+	private static void initStandingsAPI(final DB db, final Javalin app) {
 		final StandingsHandler standingsHandler = new StandingsHandler(db);
 		app.routes(() -> {
 			path("api/standings", () -> {
@@ -72,7 +71,7 @@ public class Server {
 		});
 	}
 
-	private static void initAdminAPI(final Connection db, final Javalin app) {
+	private static void initAdminAPI(final DB db, final Javalin app) {
 		final EventsHandler eventsHandler = new EventsHandler(db);
 		app.routes(() -> {
 			path("api/events", () -> {
@@ -87,7 +86,7 @@ public class Server {
 		});
 	}
 
-	private static void initPlayersAPI(final Connection db, final Javalin app) {
+	private static void initPlayersAPI(final DB db, final Javalin app) {
 		final PlayersHandler playersHandler = new PlayersHandler(db);
 		app.routes(() -> {
 			path("api/players", () -> {
@@ -102,7 +101,7 @@ public class Server {
 		});
 	}
 
-	private static void initGamesAPI(final Connection db, final Javalin app) {
+	private static void initGamesAPI(final DB db, final Javalin app) {
 		final GamesHandler gamesHandler = new GamesHandler(db);
 		app.routes(() -> {
 			path("api/games", () -> {
@@ -115,9 +114,5 @@ public class Server {
 				});
 			});
 		});
-	}
-
-	static Connection getDB(final DBProperties props) throws SQLException {
-		return DriverManager.getConnection("jdbc:mariadb://" + props.host(), props.user(), props.password());
 	}
 }
