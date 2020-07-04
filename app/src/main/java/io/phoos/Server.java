@@ -2,11 +2,13 @@ package io.phoos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
+import io.javalin.core.JavalinConfig;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.plugin.json.JavalinJackson;
 import io.phoos.event.EventsHandler;
 import io.phoos.game.GamesHandler;
 import io.phoos.player.PlayersHandler;
+import io.phoos.player.StandingsHandler;
 import org.aeonbits.owner.ConfigFactory;
 
 import java.sql.Connection;
@@ -38,16 +40,12 @@ public class Server {
 			throw new RuntimeException("Could not connect to DB", e);
 		}
 
-		Javalin app = Javalin.create(config -> {
-			config.addStaticFiles("/public");
-			config.addStaticFiles("/public/games");
-			config.addStaticFiles("/public/new/player");
-			config.addStaticFiles("/public/new/game");
-		});
+		Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins);
 
 		JavalinJackson.configure(objectMapper);
 
 		initPlayersAPI(db, app);
+		initStandingsAPI(db, app);
 		initGamesAPI(db, app);
 		initAdminAPI(db, app);
 
@@ -63,6 +61,15 @@ public class Server {
 		app.start(ConfigFactory.create(ServerProperties.class).port());
 
 		Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
+	}
+
+	private static void initStandingsAPI(final Connection db, final Javalin app) {
+		final StandingsHandler standingsHandler = new StandingsHandler(db);
+		app.routes(() -> {
+			path("api/standings", () -> {
+				getJSON(standingsHandler::getAll);
+			});
+		});
 	}
 
 	private static void initAdminAPI(final Connection db, final Javalin app) {

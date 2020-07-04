@@ -2,16 +2,53 @@ import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import API from './api';
 
 export class GamesTable extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            standings: [
-                { id: 1, date: "07-04-2021", t1_d: 'Evan White', t1_o: 'Thomas Mckenna', t2_d: 'Zach Volz', t2_o: 'Manny Shahugan', t1_h: 5, t1_f: 10, t2_h: 3, t2_f: 6 },
-                { id: 2, date: "07-05-2021", t1_d: 'Thomas Mckenna', t1_o: 'Zach Volz', t2_d: 'Evan White', t2_o: 'Manny Shahugan', t1_h: 3, t1_f: 7, t2_h: 5, t2_f: 10 }
+            games: [
+                { 
+                    id: 1, 
+                    played: {
+                        epochSecond: "07-04-2021"
+                    }, 
+                    team1: {
+                        defense: {
+                            id: 1,
+                            name: 'Evan White'
+                        },
+                        offense: {
+                            id: 2,
+                            name: 'Thomas Mckenna'
+                        }
+                    },
+                    team2: {
+                        defense: {
+                            id: 3,
+                            name: 'Zach Volz'
+                        },
+                        offense: {
+                            id: 4,
+                            name: 'Manny Shahugan'
+                        }
+                    },
+                    team1HalfScore: 5, 
+                    team2HalfScore: 3, 
+                    team1FinalScore: 10, 
+                    team2FinalScore: 6 
+                }
             ]
         }
+    }
+
+    componentDidMount() {
+        API.get('games')
+        .then(res => {
+            const games = res.data;
+            this.setState({ games });
+        });
     }
 
     buildEditButton() {
@@ -21,17 +58,17 @@ export class GamesTable extends Component {
     }
 
     renderTableData() {
-        return this.state.standings.map((standing, index) => {
-            const { id, date, t1_d, t1_o, t2_d, t2_o, t1_h, t1_f, t2_h, t2_f } = standing;
-            const team_1 = t1_d + " - " + t1_o;
-            const team_2 = t2_d + " - " + t2_o;
-            const half_scores = t1_h + " - " + t2_h;
-            const final_scores = t1_f + " - " + t2_f;
-            const winners = t1_f > t2_f ? team_1 : team_2;
-            const losers = t1_f > t2_f ? team_2 : team_1;
+        return this.state.games.map((game, index) => {
+            const { id, played, team1, team2, team1HalfScore, team2HalfScore, team1FinalScore, team2FinalScore } = game;
+            const team_1 = team1.defense.name + " - " + team1.offense.name;
+            const team_2 = team2.defense.name + " - " + team2.offense.name;
+            const half_scores = team1HalfScore + " - " + team2HalfScore;
+            const final_scores = team1FinalScore + " - " + team2FinalScore;
+            const winners = team1FinalScore > team2FinalScore ? team_1 : team_2;
+            const losers = team1FinalScore > team2FinalScore ? team_2 : team_1;
             return (
                 <tr key={id}>
-                    <td className="align-middle">{date}</td>
+                    <td className="align-middle">{new Date(played.epochSecond * 1000).toDateString()}</td>
                     <td className="align-middle winners">{winners}</td>
                     <td className="align-middle losers">{losers}</td>
                     <td className="align-middle">{half_scores}</td>

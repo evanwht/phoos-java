@@ -7,9 +7,40 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
+import API from "./api";
 
 export class GameForm extends Component {
-    renderPlayerOptions(id, name, position) {
+    constructor(props) {
+        super(props)
+        this.state = {
+            players: [
+                {
+                    id: 1,
+                    name: 'Evan White',
+                    nickname: 'EZ',
+                    email: ''
+                }
+            ]
+        }
+    }
+
+    componentDidMount() {
+        API.get('players')
+            .then(res => {
+                const players = res.data;
+                this.setState({ players });
+            });
+    }
+
+    renderPlayerOptions() {
+        return this.state.players.map((player) => {
+            return (
+                <option value={player.id}>{player.name} ({player.nickname})</option>
+            )
+        })
+    }
+
+    renderPlayerSelect(id, name, position) {
         return (
             <Col sm="12" md="5">
                 <InputGroup>
@@ -18,7 +49,7 @@ export class GameForm extends Component {
                     </InputGroup.Prepend>
                     <FormControl as="select" id={id} name={name} required>
                         <option value=""></option>
-                        <option value="1">Evan White</option>
+                        {this.renderPlayerOptions()}
                     </FormControl>
                 </InputGroup>
             </Col>
@@ -46,8 +77,8 @@ export class GameForm extends Component {
                                         <Col>
                                             <FormLabel>Team 1</FormLabel>
                                         </Col>
-                                        {this.renderPlayerOptions("player1", "t1_p1", "Defense")}
-                                        {this.renderPlayerOptions("player2", "t1_p2", "Offense")}
+                                        {this.renderPlayerSelect("player1", "t1_p1", "Defense")}
+                                        {this.renderPlayerSelect("player2", "t1_p2", "Offense")}
                                     </Form.Row>
                                 </Form.Group>
                                 <Form.Group id="team-2">
@@ -55,8 +86,8 @@ export class GameForm extends Component {
                                         <Col>
                                             <FormLabel>Team 2</FormLabel>
                                         </Col>
-                                        {this.renderPlayerOptions("player3", "t2_p1", "Defense")}
-                                        {this.renderPlayerOptions("player4", "t2_p2", "Offense")}
+                                        {this.renderPlayerSelect("player3", "t2_p1", "Defense")}
+                                        {this.renderPlayerSelect("player4", "t2_p2", "Offense")}
                                     </Form.Row>
                                 </Form.Group>
                             </Form.Group>

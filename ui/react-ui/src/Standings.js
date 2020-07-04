@@ -1,35 +1,43 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
+import API from "./api";
 
 export class StandingsTable extends Component {
     constructor(props) {
         super(props)
         this.state = {
             standings: [
-                { id: 1, name: 'Evan White', wins: 1, losses: 0, perc: 1.00 },
-                { id: 2, name: 'Zach Volz', wins: 0, losses: 1, perc: 0.00 }
+                { id: 1, player: {name: 'Evan White'}, wins: 1, losses: 0, percentage: 1.00 },
+                { id: 2, player: { name: 'Zach Volz' }, wins: 0, losses: 1, percentage: 0.00 }
             ]
         }
     }
 
+    componentDidMount() {
+        API.get('standings')
+            .then(res => {
+                const standings = res.data;
+                this.setState({ standings });
+            })
+    }
+
     renderTableData() {
         return this.state.standings.map((standing, index) => {
-            const { id, name, wins, losses, perc } = standing
+            const { player, wins, losses, percentage } = standing
             return (
-                <tr key={id}>
+                <tr key={index}>
                     <td className="align-middle">{index + 1}</td>
-                    <td className="align-middle">{name}</td>
+                    <td className="align-middle">{player.name}</td>
                     <td className="align-middle">{wins}</td>
                     <td className="align-middle">{losses}</td>
-                    <td className="align-middle">{perc}</td>
+                    <td className="align-middle">{(Math.round(percentage * 100) / 100).toFixed(2)}</td>
                 </tr>
             )
         })
     }
 
     render() {
-        console.log("hello");
         return (
             <Container className="pt-4">
                 <Table className="undernav App" size="sm" striped bordered hover variant="dark">

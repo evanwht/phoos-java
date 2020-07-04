@@ -12,6 +12,13 @@ public class Player {
 	private final String nickname;
 	private final String email;
 
+	private Player() {
+		id = 0;
+		name = null;
+		nickname = null;
+		email = null;
+	}
+
 	private Player(final Builder b) {
 		id = b.id;
 		name = b.name;
