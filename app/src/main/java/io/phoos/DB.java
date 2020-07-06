@@ -20,12 +20,25 @@ public class DB {
     }
 
     public Connection getConnection() {
+        try {
+            // the jdbc driver disconnects from the db every so often
+            if (!connection.isValid(1)) {
+                refreshConnection();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't connect to DB");
+        }
         return connection;
     }
 
     void refresh(final Context ctx) throws SQLException {
-        connection.close();
-        connection = DriverManager.getConnection("jdbc:mariadb://" + props.host(), props.user(), props.password());;
+        refreshConnection();
         ctx.result("DB Connection Refreshed");
+    }
+
+    private void refreshConnection() throws SQLException {
+        connection.close();
+        connection = DriverManager.getConnection("jdbc:mariadb://" + props.host(), props.user(), props.password());
+        ;
     }
 }
