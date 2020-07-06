@@ -1,68 +1,135 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form';
 import FormLabel from 'react-bootstrap/FormLabel';
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import API from "./api";
+import UserForm from "./UserForm";
+import AlertDismissable from "./AlertDismiss";
 
 export class PlayerForm extends Component {
     constructor(props) {
         super(props);
-        this.form = React.createRef();
-        this.firstname = React.createRef();
-        this.lastname = React.createRef();
-        this.nickname = React.createRef();
-        this.email = React.createRef();
+        this.state = {
+            firstname: "",
+            lastname: "",
+            nickname: "",
+            email: "",
+            success: "",
+            fail: ""
+        }
+        this.submit = this.submit.bind(this);
+        this.change = this.change.bind(this);
+        this.dismissAlert = this.dismissAlert.bind(this);
+    };
+
+    submit = e => {
+        e.preventDefault();
+        const { firstname, lastname, nickname, email } = this.state;
+        API.post('players', {
+            name: `${firstname} ${lastname}`,
+            nickname: nickname,
+            email: email
+        }).then(res => {
+            this.setState({
+                firstname: "",
+                lastname: "",
+                nickname: "",
+                email: "",
+                success: `Successfully created user: ${firstname} ${lastname} (${nickname})`,
+                fail: ""
+            }, () => this.render())
+        }).catch(reason => {
+            this.setState({
+                fail: "Could not create user. Please try again later.",
+                success: ""
+            }, () => this.render())
+        });
+    };
+
+    change = e => {
+        const name = e.target.name;
+        this.setState({ [name]: e.target.value });
+    };
+
+    dismissAlert() {
+        this.setState({
+            success: "",
+            fail: ""
+        });
     }
 
-    handleSubmit = event => {
-        event.preventDefault();
-        const player = {
-            name: `${this.firstname.current.value} ${this.lastname.current.value}`,
-            nickname: this.nickname.current.value,
-            email: this.email.current.value 
+    renderAlert(success, fail) {
+        if (success) {
+            return (
+                <AlertDismissable
+                    variant="success"
+                    heading="Success"
+                    message={success}
+                    dismiss={this.dismissAlert}
+                />
+            )
+        } else if (fail) {
+            return (
+                <AlertDismissable
+                    variant="danger"
+                    heading="Error"
+                    message={fail}
+                    dismiss={this.dismissAlert}
+                />
+            )
         }
-        API.post('players', {
-            name: `${this.firstname.current.value} ${this.lastname.current.value}`,
-            nickname: this.nickname.current.value,
-            email: this.email.current.value 
-        })
-        .then(res => {
-            console.log(res);
-        })
-    }
+        return null;
+    };
 
     render() {
         return (
             <Container>
-                <Row>
-                    <Col sm="8" className="mx-auto undernav">
+                <Row className="undernav">
+                    <Col sm="8" md="6" className="mx-auto boxed">
                         <h3 className="pb-4 pt-4 text-white text-center">New Player</h3>
-                        <Form ref={this.form} className="col-md-10 col-sm-12 mx-auto boxed pt-3" onSubmit={this.handleSubmit}>
-                            <Form.Group controlId="FirstName">
-                                <FormLabel className="text-white">First Name</FormLabel>
-                                <Form.Control ref={this.firstname} type="text" className="mb-3 mt-2" />
-                            </Form.Group>
-                            <Form.Group controlId="LastName">
-                                <FormLabel className="text-white">Last Name</FormLabel>
-                                <Form.Control ref={this.lastname} type="text" className="mb-3 mt-2" />
-                            </Form.Group>
-                            <Form.Group controlId="NickName">
-                                <FormLabel className="text-white">Nick Name</FormLabel>
-                                <Form.Control ref={this.nickname} type="text" className="mb-3 mt-2" />
-                            </Form.Group>
-                            <Form.Group controlId="Email">
-                                <FormLabel className="text-white">Email</FormLabel>
-                                <Form.Control ref={this.email} type="email" className="mb-3 mt-2" />
-                            </Form.Group>
-                            <Form.Row>
-                                <Col sm="6" className="mx-auto">
-                                    <Button variant="primary" size="lg" type="submit" block className="mb-4 mt-2">Submit</Button>
-                                </Col>
-                            </Form.Row>
-                        </Form>
+                        {this.renderAlert(this.state.success, this.state.fail)}
+                        <UserForm
+                            submit={this.submit}
+                            submitButtonText="Create"
+                            elements={() => (
+                                <React.Fragment>
+                                    <FormLabel className="text-white">First Name</FormLabel>
+                                    <Form.Control
+                                        type="text"
+                                        name="firstname"
+                                        value={this.state.firstname}
+                                        className="mb-3"
+                                        onChange={this.change}
+                                    />
+                                    <FormLabel className="text-white">Last Name</FormLabel>
+                                    <Form.Control
+                                        type="text"
+                                        name="lastname"
+                                        value={this.state.lastname}
+                                        className="mb-3"
+                                        onChange={this.change}
+                                    />
+                                    <FormLabel className="text-white">Nick Name</FormLabel>
+                                    <Form.Control
+                                        type="text"
+                                        name="nickname"
+                                        value={this.state.nickname}
+                                        className="mb-3"
+                                        onChange={this.change}
+                                    />
+                                    <FormLabel className="text-white">Email</FormLabel>
+                                    <Form.Control
+                                        type="email"
+                                        name="email"
+                                        value={this.state.email}
+                                        className="mb-3"
+                                        onChange={this.change}
+                                    />
+                                </React.Fragment>
+                            )}
+                        />
                     </Col>
                 </Row>
             </Container>

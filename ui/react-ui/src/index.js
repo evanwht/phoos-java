@@ -30,7 +30,7 @@ ReactDOM.render(
 );
 
 function New() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <Switch>
       <Route path={`${path}/game`} component={GameForm} />
