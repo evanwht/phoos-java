@@ -18,6 +18,11 @@ public class Team {
 	 */
 	private final Player offense;
 
+	public Team() {
+		defense = null;
+		offense = null;
+	}
+
 	private Team(final Builder builder) {
 		this.defense = builder.defense;
 		this.offense = builder.offense;

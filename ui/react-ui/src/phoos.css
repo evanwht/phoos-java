@@ -1,6 +1,9 @@
 .dark {
     background-color: #252830;
 }
+.text-hide {
+    color: #252830!important;
+}
 html {
     background-color: #252830;
     color: white;
@@ -16,7 +19,8 @@ html {
 }
 .undernav {
     margin-top:  80px;
-    padding-top: 80px;
+    padding-top: 60px;
+    padding-bottom: 20px;
 }
 .winners {
     color: green
@@ -41,7 +45,7 @@ hr {
 p {
     padding-bottom: 2px;
 }
- .underline {
+.underline {
     border-bottom: 1px solid;
     border-bottom-color: lightgray;
 }
@@ -49,11 +53,25 @@ p {
     font-size: 130%;
     padding: 10px 0 20px 0;
 }
-.boxed {
+.border-orange {
+    border-color: #FF9502!important;
+}
+.border-teal {
+    border-color: #02BD9C!important;
+}
+.bordered {
     border-style: solid;
     border-width: 1px;
+}
+.bordered-bottom {
+    border-bottom: solid;
+    border-width: 90%;
+    border-width: 1px;
+}
+.boxed {
+    border-style: solid;
+    border-width: 2px;
     border-color: cadetblue;
-    border-radius: 10px;
 } 
  .form-fill {
     width: 90%;

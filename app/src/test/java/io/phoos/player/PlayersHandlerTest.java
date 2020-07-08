@@ -1,5 +1,6 @@
 package io.phoos.player;
 
+import io.phoos.DB;
 import io.phoos.Response;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PlayersHandlerTest {
 
+	@Mock private DB db;
 	@Mock private Connection connection;
 	@Mock private PreparedStatement statement;
 	@Mock private ResultSet resultSet;
@@ -33,7 +35,8 @@ public class PlayersHandlerTest {
 
 	@BeforeEach
 	void init() {
-		handler = new PlayersHandler(connection);
+		handler = new PlayersHandler(db);
+		when(db.getConnection()).thenReturn(connection);
 	}
 
 //	@Test

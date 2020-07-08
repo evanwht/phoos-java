@@ -2,27 +2,121 @@ import React, { Component } from "react";
 import Form from 'react-bootstrap/Form';
 import FormLabel from 'react-bootstrap/FormLabel';
 import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import API from "./api";
+import UserForm from "./UserForm";
+import AlertDismissable from "./AlertDismiss";
 
 export class GameForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            date: "",
+            p1: "",
+            p2: "",
+            p3: "",
+            p4: "",
+            t1h: "",
+            t2h: "",
+            t1f: "",
+            t2f: "",
             players: [
                 {
                     id: 1,
                     name: 'Evan White',
-                    nickname: 'EZ',
-                    email: ''
+                    nickname: 'EZ'
                 }
             ]
         }
+        this.submit = this.submit.bind(this);
+        this.change = this.change.bind(this);
+        this.dismissAlert = this.dismissAlert.bind(this);
     }
+
+    change = e => {
+        const name = e.target.name;
+        this.setState({ [name]: e.target.value });
+    };
+
+    dismissAlert() {
+        this.setState({
+            success: "",
+            fail: ""
+        });
+    }
+
+    renderAlert(success, fail) {
+        if (success) {
+            return (
+                <AlertDismissable
+                    variant="success"
+                    heading="Success"
+                    message={success}
+                    dismiss={this.dismissAlert}
+                />
+            )
+        } else if (fail) {
+            return (
+                <AlertDismissable
+                    variant="danger"
+                    heading="Error"
+                    message={fail}
+                    dismiss={this.dismissAlert}
+                />
+            )
+        }
+        return null;
+    };
+
+    submit = e => {
+        e.preventDefault();
+        const { date, p1, p2, p3, p4, t1h, t2h, t1f, t2f } = this.state;
+        API.post('games', {
+            played: Date,
+            team1: {
+                defense: {
+                    id: parseInt(p1)
+                },
+                offense: {
+                    id: parseInt(p2)
+                }
+            },
+            team2: {
+                defense: {
+                    id: parseInt(p3)
+                },
+                offense: {
+                    id: parseInt(p4)
+                }
+            },
+            team1HalfScore: parseInt(t1h),
+            team2HalfScore: parseInt(t2h),
+            team1FinalScore: parseInt(t1f),
+            team2FinalScore: parseInt(t2f)
+        }).then(res => {
+            this.setState({
+                date: "",
+                p1: "",
+                p2: "",
+                p3: "",
+                p4: "",
+                t1h: "",
+                t2h: "",
+                t1f: "",
+                t2f: "",
+                success: `Successfully created game`,
+                fail: ""
+            }, () => this.render())
+        }).catch(reason => {
+            this.setState({
+                fail: "Could not create game. Please try again later.",
+                success: ""
+            }, () => this.render())
+        });
+    };
 
     componentDidMount() {
         API.get('players')
@@ -40,14 +134,20 @@ export class GameForm extends Component {
         })
     }
 
-    renderPlayerSelect(id, name, position) {
+    renderPlayerSelect(value, name, position) {
         return (
             <Col sm="12" md="5">
                 <InputGroup>
                     <InputGroup.Prepend className="d-md-none d-block w-25">
-                        <InputGroup.Text>{position}</InputGroup.Text>
+                        <InputGroup.Text className="text-white">{position}</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <FormControl as="select" id={id} name={name} required>
+                    <FormControl
+                        as="select"
+                        name={name}
+                        value={value}
+                        required
+                        onChange={this.change}
+                    >
                         <option value=""></option>
                         {this.renderPlayerOptions()}
                     </FormControl>
@@ -58,72 +158,117 @@ export class GameForm extends Component {
 
     render() {
         return (
-            <Container className="mb-4">
+            <Container className="undernav">
                 <Row>
-                    <Col sm="12" md="9" id="scores" className="undernav mx-auto">
-                        <h3 class="pb-4">New Game</h3>
-                        <Form className="container boxed" method="POST" action="api/games" id="game_input_form">
-                            <Form.Group className="pt-3" id="choosePlayers">
-                                <h4>Starting Positions</h4>
-                                <div class="d-md-block d-sm-none d-none">
-                                    <Row className="pad">
-                                        <Col sm="2"></Col>
-                                        <Col>Defense</Col>
-                                        <Col>Offense</Col>
-                                    </Row>
-                                </div>
-                                <Form.Group id="team-1">
-                                    <Form.Row>
-                                        <Col>
-                                            <FormLabel>Team 1</FormLabel>
-                                        </Col>
-                                        {this.renderPlayerSelect("player1", "t1_p1", "Defense")}
-                                        {this.renderPlayerSelect("player2", "t1_p2", "Offense")}
-                                    </Form.Row>
-                                </Form.Group>
-                                <Form.Group id="team-2">
-                                    <Form.Row>
-                                        <Col>
-                                            <FormLabel>Team 2</FormLabel>
-                                        </Col>
-                                        {this.renderPlayerSelect("player3", "t2_p1", "Defense")}
-                                        {this.renderPlayerSelect("player4", "t2_p2", "Offense")}
-                                    </Form.Row>
-                                </Form.Group>
-                            </Form.Group>
-                            <hr />
-                            <Form.Group id="half_scores">
-                                <h4 class="pt-2 mb-0">Half Time Scores</h4>
-                                <Form.Group>
-                                    <Form.Row>
-                                        <Col>
-                                            <FormLabel>Team 1</FormLabel>
-                                            <Form.Control name="t1_half" id="halfScoreTeam1" type="number" max={5} min={0} required />
-                                        </Col>
-                                        <Col>
-                                            <FormLabel>Team 2</FormLabel>
-                                            <Form.Control name="t2_half" id="halfScoreTeam2" type="number" max={5} min={0} required />
-                                        </Col>
-                                    </Form.Row>
-                                </Form.Group>
-                            </Form.Group>
-                            <Form.Group id="final_scores">
-                                <h4 class="pt-2 mb-0">Final Scores</h4>
-                                <Form.Group>
-                                    <Form.Row>
-                                        <Col>
-                                            <FormLabel>Team 1</FormLabel>
-                                            <Form.Control name="t1_final" id="endTeam1" type="number" max={15} min={0} required />
-                                        </Col>
-                                        <Col>
-                                            <FormLabel>Team 2</FormLabel>
-                                            <Form.Control name="t2_final" id="endTeam2" type="number" max={15} min={0} required />
-                                        </Col>
-                                    </Form.Row>
-                                </Form.Group>
-                            </Form.Group>
-                            <Button variant="primary" size="lg" type="submit" className="mb-4 mt-2">Submit</Button>
-                        </Form>
+                    <Col sm="10" md="8" className="pl-0 pr-0 rounded bordered border-teal mx-auto">
+                        <div className="bg-dark rounded-top border-teal bordered-bottom ">
+                            <h3 className="pb-4 pt-4 text-white text-center">New Game</h3>
+                        </div>
+                        <Container>
+                            {this.renderAlert(this.state.success, this.state.fail)}
+                            <UserForm
+                                submit={this.submit}
+                                submitButtonText="Create"
+                                elements={() => (
+                                    <React.Fragment>
+                                        <Form.Group id="players">
+                                            <h4 className="pt-3 text-white text-center">Positions</h4>
+                                            <div class="d-md-block d-sm-none d-none">
+                                                <Row className="pad text-white">
+                                                    <Col sm="2"></Col>
+                                                    <Col>Defense</Col>
+                                                    <Col>Offense</Col>
+                                                </Row>
+                                            </div>
+                                            <Form.Group id="team-1">
+                                                <Form.Row>
+                                                    <Col sm="2">
+                                                        <FormLabel className="text-white">Team 1</FormLabel>
+                                                    </Col>
+                                                    {this.renderPlayerSelect(this.state.p1, "p1", "Defense")}
+                                                    {this.renderPlayerSelect(this.state.p2, "p2", "Offense")}
+                                                </Form.Row>
+                                            </Form.Group>
+                                            <Form.Group id="team-2">
+                                                <Form.Row>
+                                                    <Col sm="2">
+                                                        <FormLabel className="text-white">Team 2</FormLabel>
+                                                    </Col>
+                                                    {this.renderPlayerSelect(this.state.p3, "p3", "Defense")}
+                                                    {this.renderPlayerSelect(this.state.p4, "p4", "Offense")}
+                                                </Form.Row>
+                                            </Form.Group>
+                                        </Form.Group>
+                                        <hr className="mt-4 border-teal"/>
+                                        <Form.Group id="scores">
+                                            <h4 className="pb-2 text-white text-center">Scores</h4>
+                                            <Form.Group>
+                                                <Form.Row>
+                                                    <Col className="pr-2">
+                                                        <h5 className="pb-2 text-white text-center">Half</h5>
+                                                        <Form.Row>
+                                                            <Col>
+                                                                <FormLabel className="text-white text-center">Team 1</FormLabel>
+                                                                <Form.Control
+                                                                    name="t1h"
+                                                                    type="number"
+                                                                    value={this.state.t1h}
+                                                                    onChange={this.change}
+                                                                    max={5} min={0} required
+                                                                />
+                                                            </Col>
+                                                            <Col xs="2">
+                                                                <FormLabel className="text-hide">suh</FormLabel>
+                                                                <p className="text-white text-center">__</p>
+                                                            </Col>
+                                                            <Col>
+                                                                <FormLabel className="text-white text-center">Team 2</FormLabel>
+                                                                <Form.Control
+                                                                    name="t2h"
+                                                                    type="number"
+                                                                    value={this.state.t2h}
+                                                                    onChange={this.change}
+                                                                    max={5} min={0} required
+                                                                />
+                                                            </Col>
+                                                        </Form.Row>
+                                                    </Col>
+                                                    <Col className="pl-2">
+                                                        <h5 className="pb-2 text-white text-center">Final</h5>
+                                                        <Form.Row>
+                                                            <Col>
+                                                                <FormLabel className="text-white text-center">Team 1</FormLabel>
+                                                                <Form.Control
+                                                                    name="t1f"
+                                                                    type="number"
+                                                                    value={this.state.t1f}
+                                                                    onChange={this.change}
+                                                                    max={15} min={0} required
+                                                                />
+                                                            </Col>
+                                                            <Col xs="2">
+                                                                <FormLabel className="text-hide">suh</FormLabel>
+                                                                <p className="text-white text-center">__</p>
+                                                            </Col>
+                                                            <Col>
+                                                                <FormLabel className="text-white text-center">Team 2</FormLabel>
+                                                                <Form.Control
+                                                                    name="t2f"
+                                                                    type="number"
+                                                                    value={this.state.t2f}
+                                                                    onChange={this.change}
+                                                                    max={15} min={0} required
+                                                                />
+                                                            </Col>
+                                                        </Form.Row>
+                                                    </Col>
+                                                </Form.Row>
+                                            </Form.Group>
+                                        </Form.Group>
+                                    </React.Fragment>
+                                )}
+                            />
+                        </Container>
                     </Col>
                 </Row>
             </Container>
