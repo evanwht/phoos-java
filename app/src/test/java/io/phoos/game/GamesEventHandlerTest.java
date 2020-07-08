@@ -1,5 +1,6 @@
 package io.phoos.game;
 
+import io.phoos.DB;
 import io.phoos.Response;
 import io.phoos.player.Player;
 import org.eclipse.jetty.http.HttpStatus;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class GamesEventHandlerTest {
 
+    @Mock private DB db;
     @Mock private Connection connection;
     @Mock private PreparedStatement statement;
     @Mock private ResultSet resultSet;
@@ -36,7 +38,8 @@ public class GamesEventHandlerTest {
 
     @BeforeEach
     void init() {
-        handler = new GamesHandler(connection);
+        handler = new GamesHandler(db);
+        when(db.getConnection()).thenReturn(connection);
     }
 
     //	@Test

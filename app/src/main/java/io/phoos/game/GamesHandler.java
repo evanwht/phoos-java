@@ -13,6 +13,7 @@ import io.phoos.sql.UpdateBuilder;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -208,14 +209,18 @@ public class GamesHandler {
 						  && g.getTeam1HalfScore() <= 5
 						  && g.getTeam2HalfScore() <= 5
 						  && g.getTeam1() != null
-						  && g.getTeam2() != null)
+						  && g.getTeam1().getDefense().getId() > 0
+						  && g.getTeam1().getOffense().getId() > 0
+						  && g.getTeam2() != null
+						  && g.getTeam2().getDefense().getId() > 0 
+						  && g.getTeam2().getOffense().getId() > 0)
 				  .get();
 	}
 
 	public Response post(final Game game) throws Exception {
 		final OptionalLong id = new InsertBuilder()
 				.table(GamesTable.TABLE_NAME)
-				.value(GamesTable.Columns.GAME_DATE, game.getPlayed() != null ? game.getPlayed().toEpochMilli(): Instant.now().toEpochMilli())
+				.value(GamesTable.Columns.GAME_DATE, Timestamp.from(game.getPlayed()))
 				.value(GamesTable.Columns.TEAM_1_P1, game.getTeam1().getDefense().getId())
 				.value(GamesTable.Columns.TEAM_1_P2, game.getTeam1().getOffense().getId())
 				.value(GamesTable.Columns.TEAM_2_P1, game.getTeam2().getDefense().getId())

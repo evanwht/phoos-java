@@ -4,6 +4,7 @@ import io.phoos.event.GameEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,19 @@ public class Game {
 	private final int team1FinalScore;
 	private final int team2FinalScore;
 	private final List<GameEvent> events;
+
+	public Game() {
+		this.id = 0;
+		this.created = Instant.now();
+		this.played = Instant.now();
+		this.team1 = null;
+		this.team2 = null;
+		this.team1HalfScore = 0;
+		this.team2HalfScore = 0;
+		this.team1FinalScore = 0;
+		this.team2FinalScore = 0;
+		this.events = Collections.emptyList();
+	}
 
 	public Game(final Builder b) {
 		this.id = b.id;
@@ -124,8 +138,8 @@ public class Game {
 
 	public static final class Builder {
 		private int id;
-		private Instant created;
-		private Instant played;
+		private Instant created = Instant.now();
+		private Instant played = Instant.now();
 		private Team team1;
 		private Team team2;
 		private int team1HalfScore;
