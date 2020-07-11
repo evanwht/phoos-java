@@ -152,7 +152,7 @@ public class GamesHandler {
 				.table(GamesTable.TABLE_NAME)
 				.where(GamesTable.Columns.ID, game.getId());
 		if (game.getPlayed() != null) {
-			builder.value(GamesTable.Columns.GAME_DATE, game.getPlayed().toEpochMilli());
+			builder.value(GamesTable.Columns.GAME_DATE, Timestamp.from(game.getPlayed()));
 		}
 		if (game.getTeam1() != null) {
 			final Team team = game.getTeam1();
