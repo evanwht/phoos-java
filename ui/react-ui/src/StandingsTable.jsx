@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
-import Container from 'react-bootstrap/Container';
-import API from "./api";
+import API from "./api/api";
 
 export class StandingsTable extends Component {
     constructor(props) {
         super(props)
         this.state = {
             standings: [
-                { id: 1, player: {name: 'Evan White'}, wins: 1, losses: 0, percentage: 1.00 },
+                { id: 1, player: { name: 'Evan White' }, wins: 1, losses: 0, percentage: 1.00 },
                 { id: 2, player: { name: 'Zach Volz' }, wins: 0, losses: 1, percentage: 0.00 }
             ]
         }
@@ -39,22 +38,20 @@ export class StandingsTable extends Component {
 
     render() {
         return (
-            <Container className="pt-4">
-                <Table className="undernav App" size="sm" striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th>Place</th>
-                            <th>Player</th>
-                            <th>Wins</th>
-                            <th>Losses</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderTableData()}
-                    </tbody>
-                </Table>
-            </Container>
+            <Table className="App" size="sm" striped bordered hover variant="dark">
+                <thead>
+                    <tr>
+                        <th>Place</th>
+                        <th>Player</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderTableData()}
+                </tbody>
+            </Table>
         );
     }
 }

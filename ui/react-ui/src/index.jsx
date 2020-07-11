@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { StandingsTable } from './Standings';
-import { GamesTable } from './Games';
+import { StandingsTable } from './StandingsTable';
+import { GamesTable } from './GamesTable';
 import { Navigation } from './Nav';
-import { PlayerForm } from './PlayerForm';
-import { GameForm } from './GameForm';
+import { PlayerForm } from './form/PlayerForm';
+import { GameForm } from './form/GameForm';
 import {
   BrowserRouter,
   Switch,
@@ -14,17 +14,20 @@ import {
 } from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 
 ReactDOM.render(
   <BrowserRouter>
     <Navigation />
-    <Switch>
-      <Route path="/standings" component={StandingsTable} />
-      <Route path="/games" component={GamesTable} />
-      <Route path="/new" component={New} />
-      {/* <Route path="/new/player" component={PlayerForm} /> */}
-      <Route path="/" component={App} />
-    </Switch>
+    <Container className="undernav">
+      <Switch>
+        <Route path="/standings" component={StandingsTable} />
+        <Route path="/games" component={GamesTable} />
+        <Route path="/new" component={New} />
+        {/* <Route path="/new/player" component={PlayerForm} /> */}
+        <Route path="/" component={App} />
+      </Switch>
+    </Container>
   </BrowserRouter>,
   document.getElementById('root')
 );
