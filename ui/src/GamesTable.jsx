@@ -40,6 +40,7 @@ export class GamesTable extends Component {
                 }
             ]
         }
+        this.refreshPage = this.refreshPage.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +51,25 @@ export class GamesTable extends Component {
             });
     }
 
+    refreshPage(refresh) {
+        if (refresh) {
+            this.componentDidMount();
+        }
+    }
+
+
+    compareGames(g1, g2) {
+        if (g1.played.epochSecond < g2.played.epochSecond) {
+            return 1;
+        } else if (g1.played.epochSecond > g2.played.epochSecond) {
+            return -1;
+        }
+        return 0;
+    }
+
     renderTableData() {
+        let games = this.state.games;
+        games.sort(this.compareGames);
         return this.state.games.map((game, i) => {
             const { id, played, team1, team2, team1HalfScore, team2HalfScore, team1FinalScore, team2FinalScore } = game;
             const team_1 = team1.defense.name + " - " + team1.offense.name;
@@ -61,7 +80,7 @@ export class GamesTable extends Component {
             const losers = team1FinalScore > team2FinalScore ? team_2 : team_1;
             return (
                 <tr key={id}>
-                    <td className="align-middle text-center">{new Date(played.epochSecond * 1000).toDateString()}</td>
+                    <td className="align-middle text-center">{new Date(played.epochSecond * 1000).toLocaleString()}</td>
                     <td className="align-middle winners text-center">{winners}</td>
                     <td className="align-middle losers text-center">{losers}</td>
                     <td className="align-middle text-center">{half_scores}</td>
@@ -69,6 +88,7 @@ export class GamesTable extends Component {
                     <td className="align-middle text-center">
                         <GameEditButton
                             id={id}
+                            refresh={this.refreshPage}
                             played={played}
                             p1={team1.defense.id}
                             p2={team1.offense.id}
@@ -87,23 +107,21 @@ export class GamesTable extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <Table className="App" size="sm" striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th className="text-center">Date</th>
-                            <th className="text-center">Winners</th>
-                            <th className="text-center">Losers</th>
-                            <th className="text-center">Half</th>
-                            <th className="text-center">Final</th>
-                            <th className="text-center">Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderTableData()}
-                    </tbody>
-                </Table>
-            </React.Fragment>
+            <Table className="rounded table-borderless" size="sm" striped hover variant="dark">
+                <thead>
+                    <tr>
+                        <th className="text-center">Date</th>
+                        <th className="text-center">Winners</th>
+                        <th className="text-center">Losers</th>
+                        <th className="text-center">Half</th>
+                        <th className="text-center">Final</th>
+                        <th className="text-center">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderTableData()}
+                </tbody>
+            </Table>
         );
     }
 }

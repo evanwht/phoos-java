@@ -7,7 +7,7 @@ import { Navigation } from './Nav';
 import { PlayerForm } from './form/PlayerForm';
 import { GameForm } from './form/GameForm';
 import {
-  BrowserRouter,
+  HashRouter,
   Switch,
   Route
 } from "react-router-dom";
@@ -16,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 
 ReactDOM.render(
-  <BrowserRouter>
+  <HashRouter>
     <Navigation />
     <Container className="undernav">
       <Switch>
@@ -27,7 +27,7 @@ ReactDOM.render(
         <Route path="/" exact component={App} />
       </Switch>
     </Container>
-  </BrowserRouter>,
+  </HashRouter>,
   document.getElementById('root')
 );
 

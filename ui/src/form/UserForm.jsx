@@ -9,13 +9,20 @@ const UserForm = props => {
         elements,
     } = props;
 
+    let button = null;
+    if (props.submitButtonText) {
+        button = (
+            <Form.Row className="pr-1 pl-1 mb-4 mt-4">
+                <Button variant="primary" type="submit" block>{submitButtonText}</Button>
+            </Form.Row>
+        );
+    }
+
     return (
         <React.Fragment>
             <Form onSubmit={submit}>
                 {elements()}
-                <Form.Row className="pr-1 pl-1 mb-4 mt-4">
-                    <Button variant="primary" type="submit" block>{submitButtonText}</Button>
-                </Form.Row>
+                {button}
             </Form>
         </React.Fragment >
     )

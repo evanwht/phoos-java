@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import API from "../api/api";
 import UserForm from "./UserForm";
 import AlertDismissable from "./AlertDismiss";
@@ -24,22 +25,38 @@ export class GameEditModal extends Component {
             t1f: props.t1f,
             t2f: props.t2f,
             players: [],
-            changed: new Set()
+            changed: new Set(),
+            buttonVariant: "outline-primary"
         }
         this.submit = this.submit.bind(this);
         this.change = this.change.bind(this);
         this.dismissAlert = this.dismissAlert.bind(this);
     }
 
+    componentDidMount() {
+        API.get('players')
+            .then(res => {
+                const players = res.data;
+                this.setState({ players });
+            });
+    }
+
     change = e => {
+        let changed = this.state.changed;
         const name = e.target.name;
-        if (this.props[name] !== e.target.value) {
-            this.state.changed.add(name);
+        if (!this.props[name].equals(e.target.value)) {
+            changed.add(name);
         } else {
-            this.state.changed.delete(name);
+            changed.delete(name);
+        }
+        let buttonVariant = "outline-primary";
+        if (changed.size > 0) {
+            buttonVariant = "primary"
         }
         this.setState({
-            [name]: e.target.value
+            [name]: e.target.value,
+            buttonVariant: buttonVariant,
+            changed: changed
         });
     };
 
@@ -122,19 +139,21 @@ export class GameEditModal extends Component {
 
     submit = e => {
         e.preventDefault();
-        API.put(`games/${this.props.id}`, this.buildGameChanges(this.state.changed))
-            .then(res => {
-                this.setState({
-                    changed: new Set(),
-                    success: `Successfully created game`,
-                    fail: ""
-                }, () => this.render())
-            }).catch(reason => {
-                this.setState({
-                    fail: "Could not create game. Please try again later.",
-                    success: ""
-                }, () => this.render())
-            });
+        if (this.state.changed.size > 0) {
+            API.put(`games/${this.props.id}`, this.buildGameChanges(this.state.changed))
+                .then(res => {
+                    this.setState({
+                        changed: new Set(),
+                        success: `Successfully created game`,
+                        fail: ""
+                    }, () => this.props.onChange())
+                }).catch(reason => {
+                    this.setState({
+                        fail: "Could not create game. Please try again later.",
+                        success: ""
+                    }, () => this.render())
+                });
+        }
     };
 
     playerSelections() {
@@ -155,12 +174,14 @@ export class GameEditModal extends Component {
                         </Col>
                         <PlayerSelect
                             value={this.state.p1}
+                            players={this.state.players}
                             name="p1"
                             position="Defense"
                             change={this.change}
                         />
                         <PlayerSelect
                             value={this.state.p2}
+                            players={this.state.players}
                             name="p2"
                             position="Offense"
                             change={this.change}
@@ -174,12 +195,14 @@ export class GameEditModal extends Component {
                         </Col>
                         <PlayerSelect
                             value={this.state.p3}
+                            players={this.state.players}
                             name="p3"
                             position="Defense"
                             change={this.change}
                         />
                         <PlayerSelect
                             value={this.state.p4}
+                            players={this.state.players}
                             name="p4"
                             position="Offense"
                             change={this.change}
@@ -262,32 +285,34 @@ export class GameEditModal extends Component {
 
     render() {
         return (
-            <Modal size="lg" show={this.props.show} onHide={this.props.onHide} className="dark">
-                <Modal.Header closeButton className="dark">
-                    <Modal.Title>Edit Game</Modal.Title>
+            <Modal size="lg" show={this.props.show} onHide={this.props.onHide} variant="dark">
+                <Modal.Header className="dark">
+                    <Modal.Title className="mx-auto">Edit Game</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="dark">
-                    <Row>
-                        <Col sm="10" md="8" className="pl-0 pr-0 rounded bordered border-teal mx-auto">
-                            <div className="bg-dark rounded-top border-teal bordered-bottom ">
-                                <h3 className="pb-4 pt-4 text-white text-center">New Game</h3>
-                            </div>
-                            <Container>
-                                {this.renderAlert(this.state.success, this.state.fail)}
-                                <UserForm
-                                    submit={this.submit}
-                                    submitButtonText="Create"
-                                    elements={() => (
-                                        <React.Fragment>
-                                            {this.playerSelections()}
-                                            <hr className="mt-4 border-teal" />
-                                            {this.scoreSelections()}
-                                        </React.Fragment>
-                                    )}
-                                />
-                            </Container>
-                        </Col>
-                    </Row>
+                    <Container>
+                        {this.renderAlert(this.state.success, this.state.fail)}
+                        <UserForm
+                            submit={this.submit}
+                            elements={() => (
+                                <React.Fragment>
+                                    {this.playerSelections()}
+                                    <hr className="mt-4 border-teal" />
+                                    {this.scoreSelections()}
+                                </React.Fragment>
+                            )}
+                        />
+                        <Form.Row className="pr-1 pl-1 mb-4 mt-4">
+                            <Col>
+                                <Button variant="secondary" onClick={this.props.onHide} block>Cancel</Button>
+                            </Col>
+                            <Col xs="1"></Col>
+                            <Col>
+                                <Button variant={this.state.buttonVariant} onClick={this.submit} block>Save</Button>
+                            </Col>
+                        </Form.Row>
+                    </Container>
+
                 </Modal.Body>
             </Modal>
         );

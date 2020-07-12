@@ -21,18 +21,21 @@ export class GameForm extends Component {
             t2h: props.t2h,
             t1f: props.t1f,
             t2f: props.t2f,
-            players: [
-                {
-                    id: 1,
-                    name: 'Evan White',
-                    nickname: 'EZ'
-                }
-            ]
+            players: []
         }
         this.submit = this.submit.bind(this);
         this.change = this.change.bind(this);
         this.dismissAlert = this.dismissAlert.bind(this);
     }
+
+    componentDidMount() {
+        API.get('players')
+            .then(res => {
+                const players = res.data;
+                this.setState({ players });
+            });
+    }
+
 
     change = e => {
         const name = e.target.name;
@@ -73,7 +76,6 @@ export class GameForm extends Component {
         e.preventDefault();
         const { p1, p2, p3, p4, t1h, t2h, t1f, t2f } = this.state;
         API.post('games', {
-            played: Date,
             team1: {
                 defense: {
                     id: parseInt(p1)
@@ -134,12 +136,14 @@ export class GameForm extends Component {
                         </Col>
                         <PlayerSelect
                             value={this.state.p1}
+                            players={this.state.players}
                             name="p1"
                             position="Defense"
                             change={this.change}
                         />
                         <PlayerSelect
                             value={this.state.p2}
+                            players={this.state.players}
                             name="p2"
                             position="Offense"
                             change={this.change}
@@ -153,12 +157,14 @@ export class GameForm extends Component {
                         </Col>
                         <PlayerSelect
                             value={this.state.p3}
+                            players={this.state.players}
                             name="p3"
                             position="Defense"
                             change={this.change}
                         />
                         <PlayerSelect
                             value={this.state.p4}
+                            players={this.state.players}
                             name="p4"
                             position="Offense"
                             change={this.change}
