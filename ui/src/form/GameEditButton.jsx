@@ -7,8 +7,10 @@ export class GameEditButton extends Component {
         super(props)
         this.showModal = this.showModal.bind(this);
         this.hideModal = this.hideModal.bind(this);
+        this.handleChanged = this.handleChanged.bind(this);
         this.state = {
-            show: false
+            show: false,
+            changed: false
         }
     }
 
@@ -19,6 +21,7 @@ export class GameEditButton extends Component {
                 <GameEditModal
                     show={this.state.show}
                     onHide={this.hideModal}
+                    onChange={this.handleChanged}
                     id={id}
                     date={played}
                     p1={p1}
@@ -35,6 +38,12 @@ export class GameEditButton extends Component {
         return null;
     }
 
+    handleChanged() {
+        this.setState({
+            changed: true
+        })
+    }
+
     showModal() {
         this.setState({
             show: true
@@ -44,7 +53,7 @@ export class GameEditButton extends Component {
     hideModal() {
         this.setState({
             show: false
-        }, () => this.render());
+        }, () => this.props.refresh(this.state.changed));
     }
 
     render() {

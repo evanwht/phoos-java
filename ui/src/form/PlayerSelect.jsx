@@ -2,28 +2,13 @@ import React, { Component } from "react";
 import FormControl from 'react-bootstrap/FormControl';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-import API from '../api/api';
 
 export class PlayerSelect extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            players: []
-        };
-    };
-
-    componentDidMount() {
-        API.get('players')
-            .then(res => {
-                const players = res.data;
-                this.setState({ players });
-            });
-    }
 
     renderPlayerOptions(players) {
         return players.map((player) => {
             return (
-                <option value={player.id}>{player.name} ({player.nickname})</option>
+                <option key={player.id} value={player.id}>{player.name} ({player.nickname})</option>
             )
         })
     }
@@ -43,8 +28,8 @@ export class PlayerSelect extends Component {
                         required
                         onChange={change}
                     >
-                        <option value=""></option>
-                        {this.renderPlayerOptions(this.state.players)}
+                        <option key="-1" value="-1"></option>
+                        {this.renderPlayerOptions(this.props.players)}
                     </FormControl>
                 </InputGroup>
             </Col>

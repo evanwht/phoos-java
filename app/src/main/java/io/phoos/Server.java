@@ -2,8 +2,8 @@ package io.phoos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-import io.javalin.core.JavalinConfig;
 import io.javalin.http.NotFoundResponse;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.plugin.json.JavalinJackson;
 import io.phoos.event.EventsHandler;
 import io.phoos.game.GamesHandler;
@@ -40,7 +40,9 @@ public class Server {
 
 		Javalin app = Javalin.create(c -> {
 			c.enableCorsForAllOrigins();
-			c.addStaticFiles("public/");
+			c.addStaticFiles("/games", "public/", Location.CLASSPATH);
+			c.addStaticFiles("/standings", "public/", Location.CLASSPATH);
+			c.addStaticFiles("public/", Location.CLASSPATH);
 		});
 
 		JavalinJackson.configure(objectMapper);
