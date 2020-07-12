@@ -35,7 +35,7 @@ task build(type: NpmTask) {
     outputs.dir 'build'
   args = ['run', 'build']
 }
-// build.dependsOn(npm_install)
+build.dependsOn(npm_install)
 
 /**
  * Deletes the "dist" folder containing the result of the Angular build process.
