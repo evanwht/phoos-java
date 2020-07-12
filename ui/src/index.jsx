@@ -9,8 +9,7 @@ import { GameForm } from './form/GameForm';
 import {
   BrowserRouter,
   Switch,
-  Route,
-  useRouteMatch
+  Route
 } from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,26 +20,16 @@ ReactDOM.render(
     <Navigation />
     <Container className="undernav">
       <Switch>
-        <Route path="/standings" component={StandingsTable} />
-        <Route path="/games" component={GamesTable} />
-        <Route path="/new" component={New} />
-        {/* <Route path="/new/player" component={PlayerForm} /> */}
-        <Route path="/" component={App} />
+        <Route path="/standings" exact component={StandingsTable} />
+        <Route path="/games" exact component={GamesTable} />
+        <Route path="/new/game" exact component={GameForm} />
+        <Route path="/new/player" exact component={PlayerForm} />
+        <Route path="/" exact component={App} />
       </Switch>
     </Container>
   </BrowserRouter>,
   document.getElementById('root')
 );
-
-function New() {
-  let { path } = useRouteMatch();
-  return (
-    <Switch>
-      <Route path={`${path}/game`} component={GameForm} />
-      <Route path={`${path}/player`} component={PlayerForm} />
-    </Switch>
-  )
-}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

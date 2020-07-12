@@ -151,9 +151,9 @@ public class GamesHandler {
 		final UpdateBuilder builder = new UpdateBuilder()
 				.table(GamesTable.TABLE_NAME)
 				.where(GamesTable.Columns.ID, game.getId());
-		if (game.getPlayed() != null) {
-			builder.value(GamesTable.Columns.GAME_DATE, Timestamp.from(game.getPlayed()));
-		}
+		// if (game.getPlayed() != null) {
+		// 	builder.value(GamesTable.Columns.GAME_DATE, Timestamp.from(game.getPlayed()));
+		// }
 		if (game.getTeam1() != null) {
 			final Team team = game.getTeam1();
 			if (team.getDefense() != null) {

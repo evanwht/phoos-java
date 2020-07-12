@@ -38,7 +38,10 @@ public class Server {
 			throw new RuntimeException("Could not connect to DB", e);
 		}
 
-		Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins);
+		Javalin app = Javalin.create(c -> {
+			c.enableCorsForAllOrigins();
+			c.addStaticFiles("public/");
+		});
 
 		JavalinJackson.configure(objectMapper);
 

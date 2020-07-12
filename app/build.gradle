@@ -28,6 +28,19 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
 }
 
+/**
+ * Copies the angular app into the "public" folder which is served by Spring Boot.
+ */
+task copyPublicResources(type: Copy){
+    from '../ui/build'
+    into 'src/main/resources/public'
+}
+/**
+ * Forces the angular app to be built.
+ */
+copyPublicResources.dependsOn(':ui:build')
+processResources.dependsOn(copyPublicResources)
+
 jar {
     manifest {
         attributes(

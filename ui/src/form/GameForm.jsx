@@ -71,7 +71,7 @@ export class GameForm extends Component {
 
     submit = e => {
         e.preventDefault();
-        const { date, p1, p2, p3, p4, t1h, t2h, t1f, t2f } = this.state;
+        const { p1, p2, p3, p4, t1h, t2h, t1f, t2f } = this.state;
         API.post('games', {
             played: Date,
             team1: {
