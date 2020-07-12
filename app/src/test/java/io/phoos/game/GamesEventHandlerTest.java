@@ -105,9 +105,12 @@ public class GamesEventHandlerTest {
         when(resultSet.getInt(LastGamesView.Columns.TEAM_2_HALF.getName())).thenReturn(4);
         when(resultSet.getInt(LastGamesView.Columns.TEAM_1_FINAL.getName())).thenReturn(10);
         when(resultSet.getInt(LastGamesView.Columns.TEAM_2_FINAL.getName())).thenReturn(8);
-        Game player = handler.get(1);
-        assertEquals(player, Game.newBuilder().id(1)
+        Game savedGame = handler.get(1);
+        savedGame = Game.from(savedGame).created(now).build();
+        assertEquals(
+                savedGame, Game.newBuilder().id(1)
                                  .played(now)
+                                 .created(now)
                                  .team1(Team.builder()
                                             .setDefense(Player.newBuilder().id(1).name("team 1 d").build())
                                             .setOffense(Player.newBuilder().id(2).name("team 1 o").build())
@@ -151,7 +154,7 @@ public class GamesEventHandlerTest {
                                              .build());
         assertEquals(HttpStatus.OK_200, post.getStatusCode());
         assertEquals("Saved game with new id: 42", post.getMessage());
-        verify(statement).setObject(1, now.toEpochMilli(), Types.TIMESTAMP);
+        verify(statement).setObject(1, Timestamp.from(now), Types.TIMESTAMP);
         verify(statement).setObject(2, 1, Types.INTEGER);
         verify(statement).setObject(3, 2, Types.INTEGER);
         verify(statement).setObject(4, 3, Types.INTEGER);
