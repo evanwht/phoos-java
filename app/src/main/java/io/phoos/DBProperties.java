@@ -2,10 +2,13 @@ package io.phoos;
 
 import org.aeonbits.owner.Config;
 
+import static org.aeonbits.owner.Config.*;
+
 /**
  * @author evanwht1@gmail.com
  */
-@Config.Sources({"classpath:config/server.properties"})
+@Sources({"file:/config/server.properties",
+		"classpath:config/server.properties"})
 public interface DBProperties extends Config {
 
 	@Key("db.host")

@@ -1,0 +1,38 @@
+version: '2.4'
+
+services:
+  phoos:
+    image: evanwht/phoos-javalin
+    volumes:
+      - type: bind
+        source: ./config
+        target: /config
+    container_name: phoos
+    ports:
+      - "8080:8080"
+    depends_on:
+      phoos-db:
+        condition: service_healthy
+    networks:
+      - default
+
+  phoos-db:
+    container_name: phoos-db
+    build:
+      context: ./
+      dockerfile: maria.Dockerfile
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: testing
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
