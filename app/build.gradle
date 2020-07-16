@@ -1,6 +1,10 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '2.4.0'
 }
+
+mainClassName = 'io.phoos.Server'
 
 group 'io.phoos'
 version '1.0-SNAPSHOT'
@@ -11,10 +15,6 @@ repositories {
 test {
     useJUnitPlatform()
 }
-sourceSets {
-    main.java.srcDir "src/main/java"
-    main.resources.srcDir "src/main/resources"
-}
 
 dependencies {
     compile 'io.javalin:javalin:3.9.0'
@@ -23,29 +23,34 @@ dependencies {
     compile "org.slf4j:slf4j-simple:1.8.0-beta4"
     testImplementation 'org.mockito:mockito-core:3.3.3'
     testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.3.3'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
 }
 
+jib {
+    from {
+        image = 'openjdk:14-jdk-slim'
+    }
+    to {
+        image = 'evanwht/phoos-javalin'
+        tags = ["latest"]
+    }
+    container {
+        jvmFlags = ['-Xms512m']
+        mainClass = "${mainClassName}"
+    }
+}
+
 /**
- * Copies the angular app into the "public" folder which is served by Spring Boot.
+ * Copies the react app into the "public" folder which is served by the app.
  */
 task copyPublicResources(type: Copy){
     from '../ui/build'
     into 'src/main/resources/public'
 }
 /**
- * Forces the angular app to be built.
+ * Forces the react app to be built.
  */
 copyPublicResources.dependsOn(':ui:build')
 processResources.dependsOn(copyPublicResources)
-
-jar {
-    manifest {
-        attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'io.phoos.Server'
-        )
-    }
-}

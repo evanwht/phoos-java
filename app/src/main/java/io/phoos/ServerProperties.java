@@ -1,11 +1,13 @@
 package io.phoos;
 
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Config.Sources;
 
 /**
  * @author evanwht1@gmail.com
  */
-@Config.Sources({"classpath:config/server.properties"})
+@Sources({"file:/config/server.properties",
+		"classpath:config/server.properties"})
 public interface ServerProperties extends Config {
 	int port();
 }
