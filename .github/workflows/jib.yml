@@ -1,6 +1,6 @@
 # This workflow will build a jib docker image
 
-name: JIB Master CI
+name: jib
 
 on:
   push:

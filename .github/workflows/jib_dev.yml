@@ -1,6 +1,6 @@
 # This workflow will build a jib docker image
 
-name: JIB Developement CI
+name: jib_dev
 
 on:
   push:
