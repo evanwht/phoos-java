@@ -1,5 +1,5 @@
 # Phoos-Java
-[![CI Actions Status](https://github.com/evanwht1/phoos-java/workflows/ci/badge.svg)](https://github.com/evanwht1/phoos-java/actions)
+[![CI](https://github.com/evanwht1/phoos-java/workflows/CI/badge.svg)](https://github.com/evanwht1/phoos-java/actions)
 
 A foosball score tracking webserver implemented in java and react. This will track very basic information
 about foosball games (scores and players). As of right now it assumes a specific set of rules are followed:
