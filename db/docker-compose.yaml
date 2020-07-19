@@ -1,20 +1,20 @@
 version: '2.4'
 
 services:
-  phoos:
-    image: evanwht/phoos-javalin
+  phoos-javalin:
+    image: evanwht/phoos-javalin:1.0-SNAPSHOT
     volumes:
       - type: bind
         source: ./config
         target: /config
-    container_name: phoos
+    container_name: phoos-javalin
     ports:
       - "8080:8080"
     depends_on:
       phoos-db:
         condition: service_healthy
     networks:
-      - default
+      - phoos-network
 
   phoos-db:
     container_name: phoos-db
@@ -31,8 +31,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: testing
     networks:
-      - default
+      - phoos-network
 
 networks:
-  default:
+  phoos-network:
     driver: bridge
