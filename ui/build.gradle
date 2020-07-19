@@ -1,5 +1,5 @@
 plugins {
-  id "com.github.node-gradle.node" version "2.2.4"
+    id "com.github.node-gradle.node" version "2.2.4"
 }
 
 apply plugin: 'com.github.node-gradle.node'
@@ -13,12 +13,18 @@ node {
     download = true
 }
 
+npm_install {
+    inputs.file('package.json')
+    inputs.file('package-lock.json')
+    outputs.dir('node_modules')
+}
+
 task build(type: NpmTask) {
-    inputs.files fileTree("public")
-    inputs.files fileTree("src")
-    inputs.file 'package.json'
-    inputs.file 'package-lock.json'
-    outputs.dir 'build'
-  args = ['run', 'build']
+    inputs.dir('public')
+    inputs.dir('src')
+    inputs.file('package.json')
+    inputs.file('package-lock.json')
+    outputs.dir('build')
+    args = ['run', 'build']
 }
 build.dependsOn(npm_install)
