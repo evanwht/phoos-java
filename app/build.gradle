@@ -1,4 +1,5 @@
 plugins {
+    id 'base'
     id 'java'
     id 'application'
     id 'com.google.cloud.tools.jib' version '2.4.0'
@@ -6,16 +7,12 @@ plugins {
 
 mainClassName = 'io.phoos.Server'
 
-group 'io.phoos'
-version '1.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
 }
 test {
     useJUnitPlatform()
 }
-
 dependencies {
     compile 'io.javalin:javalin:3.9.0'
     compile 'org.aeonbits.owner:owner:1.0.12'
@@ -30,14 +27,13 @@ dependencies {
 
 jib {
     from {
-        image = 'openjdk:14-jdk-slim'
+        image = "openjdk:14-jdk-slim"
     }
     to {
-        image = 'evanwht/phoos-javalin'
-        tags = ["latest"]
+        image = "evanwht/phoos-javalin:${version}"
     }
     container {
-        jvmFlags = ['-Xms512m']
+        jvmFlags = ["-Xms512m"]
         mainClass = "${mainClassName}"
     }
 }
@@ -45,12 +41,20 @@ jib {
 /**
  * Copies the react app into the "public" folder which is served by the app.
  */
-task copyPublicResources(type: Copy){
-    from '../ui/build'
+task prepasePublic(type: DefaultTask) {
+    inputs.dir('../ui/build')
+    delete 'src/main/resources/public'
+}
+
+task copyUI(type: Copy){
+    from "../ui/build"
     into 'src/main/resources/public'
 }
-/**
- * Forces the react app to be built.
- */
-copyPublicResources.dependsOn(':ui:build')
-processResources.dependsOn(copyPublicResources)
+prepasePublic.dependsOn(":ui:build")
+copyUI.dependsOn(prepasePublic)
+processResources.dependsOn(copyUI)
+
+task customClean(type: Delete) {
+    delete 'src/main/resources/public'
+}
+clean.dependsOn customClean
