@@ -1,10 +1,10 @@
 # This workflow will build a jib docker image
 
-name: JIB Master CI
+name: JIB Developement CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   build:
@@ -25,5 +25,5 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew jib -Djib.to.auth.username=${{secrets.DOCKER_USERNAME}} -Djib.to.auth.password=${{secrets.DOCKER_TOKEN}} -Djib.to.tags='latest'
+        run: ./gradlew jib -Djib.to.auth.username=${{secrets.DOCKER_USERNAME}} -Djib.to.auth.password=${{secrets.DOCKER_TOKEN}}
 

@@ -6,6 +6,8 @@ plugins {
 }
 
 mainClassName = 'io.phoos.Server'
+group 'io.phoos'
+version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -30,7 +32,7 @@ jib {
         image = "openjdk:14-jdk-slim"
     }
     to {
-        image = "evanwht/phoos-javalin:${version}"
+        image = "evanwht/phoos-javalin:${project.version}"
     }
     container {
         jvmFlags = ["-Xms512m"]
@@ -41,7 +43,7 @@ jib {
 /**
  * Copies the react app into the "public" folder which is served by the app.
  */
-task prepasePublic(type: DefaultTask) {
+task cleanPublic(type: DefaultTask) {
     inputs.dir('../ui/build')
     delete 'src/main/resources/public'
 }
@@ -50,8 +52,8 @@ task copyUI(type: Copy){
     from "../ui/build"
     into 'src/main/resources/public'
 }
-prepasePublic.dependsOn(":ui:build")
-copyUI.dependsOn(prepasePublic)
+cleanPublic.dependsOn(":ui:build")
+copyUI.dependsOn(cleanPublic)
 processResources.dependsOn(copyUI)
 
 task customClean(type: Delete) {
