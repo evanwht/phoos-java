@@ -25,7 +25,5 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew jib \
-                  -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
-                  -Djib.to.auth.password=${{ secrets.DOCKER_TOKEN }}
+        run: ./gradlew jib -Djib.to.auth.username=${{secrets.DOCKER_USERNAME}} -Djib.to.auth.password=${{secrets.DOCKER_TOKEN}}
 
