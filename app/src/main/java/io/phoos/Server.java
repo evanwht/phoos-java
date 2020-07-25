@@ -10,6 +10,7 @@ import io.phoos.game.GamesHandler;
 import io.phoos.player.PlayersHandler;
 import io.phoos.standings.StandingsHandler;
 import org.aeonbits.owner.ConfigFactory;
+import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
 
@@ -31,9 +32,12 @@ public class Server {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	public static void main(String[] args) {
+		final DBProperties dbProperties = ConfigFactory.create(DBProperties.class);
+		performMigrations(dbProperties);
+
 		final DB db;
 		try {
-			db = new DB(ConfigFactory.create(DBProperties.class));
+			db = new DB(dbProperties);
 		} catch (SQLException e) {
 			throw new RuntimeException("Could not connect to DB", e);
 		}
@@ -65,6 +69,22 @@ public class Server {
 		app.start(ConfigFactory.create(ServerProperties.class).port());
 
 		Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
+	}
+
+	/**
+	 * Performs migrations on the database. Flyway looks in src/main/resources/db/migration/ for migrations to run.
+	 * Migrations there should follow the naming patter VX__Migration_name.sql where X is the next number after the
+	 * most recent migration.
+	 *
+	 * @param dbProperties db properties for host, username, and password
+	 */
+	private static void performMigrations(final DBProperties dbProperties) {
+		final String connectString = dbProperties.connectionType() + dbProperties.host();
+		final Flyway flyway = Flyway.configure()
+									.baselineOnMigrate(true)
+									.dataSource(connectString, dbProperties.user(), dbProperties.password())
+									.load();
+		flyway.migrate();
 	}
 
 	private static void initStandingsAPI(final DB db, final Javalin app) {

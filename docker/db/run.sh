@@ -1,5 +1,5 @@
 #!/bin/bash
-sleep 5
+#sleep 5
 mysql -uroot -ptesting <<< "create database phoosball;"
 mysql -uroot -ptesting <<< "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by 'testing';"
 mysql -uroot -ptesting mysql < /1.phoosball.sql

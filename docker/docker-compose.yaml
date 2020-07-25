@@ -19,8 +19,7 @@ services:
   phoos-db:
     container_name: phoos-db
     build:
-      context: ./
-      dockerfile: maria.Dockerfile
+      context: db
     ports:
       - "3306:3306"
     healthcheck:
