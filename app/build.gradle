@@ -16,6 +16,7 @@ test {
     useJUnitPlatform()
 }
 dependencies {
+    compile "org.flywaydb:flyway-core:6.5.2"
     compile 'io.javalin:javalin:3.9.0'
     compile 'org.aeonbits.owner:owner:1.0.12'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
@@ -24,12 +25,13 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.3.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.0'
+    implementation 'de.mkammerer:argon2-jvm:2.7'
 }
 
 jib {
     from {
-        image = "openjdk:14-jdk-slim"
+        image = "adoptopenjdk/openjdk14:alpine-jre@sha256:cdd86f0dcf7d1d4151c37c23b0a22c3369a7c8cbb12b0975ed0c2d8c9ab2963e"
     }
     to {
         image = "evanwht/phoos-javalin:${project.version}"
@@ -54,7 +56,7 @@ task copyUI(type: Copy){
 }
 cleanPublic.dependsOn(":ui:build")
 copyUI.dependsOn(cleanPublic)
-processResources.dependsOn(copyUI)
+processResources.dependsOn copyUI
 
 task customClean(type: Delete) {
     delete 'src/main/resources/public'

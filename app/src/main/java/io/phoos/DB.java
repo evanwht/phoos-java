@@ -16,7 +16,8 @@ public class DB {
 
     DB(DBProperties props) throws SQLException {
         this.props = props;
-        connection = DriverManager.getConnection("jdbc:mariadb://" + props.host(), props.user(), props.password());;
+        final String connectString = props.connectionType() + props.host();
+        connection = DriverManager.getConnection(connectString, props.user(), props.password());;
     }
 
     public Connection getConnection() {
@@ -39,6 +40,5 @@ public class DB {
     private void refreshConnection() throws SQLException {
         connection.close();
         connection = DriverManager.getConnection("jdbc:mariadb://" + props.host(), props.user(), props.password());
-        ;
     }
 }

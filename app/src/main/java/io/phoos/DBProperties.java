@@ -11,6 +11,9 @@ import static org.aeonbits.owner.Config.*;
 		"classpath:config/server.properties"})
 public interface DBProperties extends Config {
 
+	@Key("db.connection.type")
+	String connectionType();
+
 	@Key("db.host")
 	String host();
 
