@@ -9,13 +9,14 @@ import java.sql.Types;
  */
 public class PlayerTable {
 
-    static final String TABLE_NAME = "players";
+    public static final String TABLE_NAME = "players";
 
     public enum Columns implements Column {
         ID("id", Types.INTEGER),
         NAME("name", Types.VARCHAR),
         NICKNAME("display_name", Types.VARCHAR),
-        EMAIL("email", Types.VARCHAR);
+        EMAIL("email", Types.VARCHAR),
+        PASSWORD("password", Types.VARCHAR);
 
         private final String name;
         private final int type;
