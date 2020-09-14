@@ -12,7 +12,6 @@ import io.phoos.player.PlayerTable;
 import io.phoos.sql.SelectBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Set;
@@ -39,14 +38,23 @@ public class AuthHandler implements AccessManager {
         }
         final String password = ctx.basicAuthCredentials().getPassword();
         final String username = ctx.basicAuthCredentials().getUsername();
-        final String hash = argon2.hash(ITERATIONS, MEMORY_TO_USE, PARRELLELISM, password.toCharArray(), Charset.defaultCharset());
-        final String pass = new SelectBuilder<>(res -> res.getString("salt") + res.getString("password"))
+        return new SelectBuilder<>(res -> new UserDetails(res.getString("password"), Roles.valueOf(res.getString("roles"))))
                 .table(PlayerTable.TABLE_NAME)
                 .select(PlayerTable.Columns.PASSWORD)
                 .where(PlayerTable.Columns.NAME, username)
                 .getOne(db.getConnection())
-                .orElse(null);
-        return hash.equals(pass) ? Set.of(Roles.USER) : Set.of(Roles.ANYONE);
+                .map(userDetails -> argon2.verify(userDetails.hash, password.toCharArray()) ? Set.of(userDetails.roles) : Set.of(Roles.ANYONE))
+                .orElse(Collections.emptySet());
+    }
+
+    static class UserDetails {
+        String hash;
+        Roles roles;
+
+        public UserDetails(final String hash, Roles roles) {
+            this.hash = hash;
+            this.roles = roles;
+        }
     }
 
     @Override
